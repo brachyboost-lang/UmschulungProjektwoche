@@ -13,10 +13,10 @@ namespace Streiter_Motorsport_Software
         public static void MainLoop()
         {
             Console.WriteLine("Bitte geben Sie Ihren Nutzernamen an: ");
-            string username = Console.ReadLine();
-            
+            string username = GetUserInput.GetUserInputStr();
+
             Console.WriteLine("Passwort eingeben: ");
-            string password = Console.ReadLine();
+            string password = ;
             UserManager userManager = new UserManager();
             User? user = userManager.Authenticate(username, password);
             if (user != null)

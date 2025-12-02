@@ -60,4 +60,90 @@ namespace Streiter_Motorsport_Software
             return null; //wenn kein User gefunden wurde, gib null zurück
         }
     }
+
+
+    // Hilfsklasse für Benutzereingaben
+    public static class GetUserInput
+    {
+        public static string PromptUsername()
+        {
+            Console.Write("Bitte geben Sie Ihren Nutzernamen ein: ");
+            return Console.ReadLine() ?? string.Empty;
+        }
+        public static string PromptPassword()
+        {
+            Console.Write("Bitte geben Sie Ihr Passwort ein: ");
+            return Console.ReadLine() ?? string.Empty;
+        }
+        public static string GetUserInputStr()
+        {
+            return Console.ReadLine() ?? string.Empty;
+        }
+        public static int GetUserInputInt()
+        {
+            while (true)
+            {
+                string input = Console.ReadLine() ?? string.Empty;
+                if (int.TryParse(input, out int result))
+                {
+                    return result;
+                }
+                Console.Write("Ungültige Eingabe. Bitte eine Zahl eingeben: ");
+            }
+        }
+
+        public static byte GetUserInputByte()
+        {
+            while (true)
+            {
+                string input = Console.ReadLine() ?? string.Empty;
+                if (byte.TryParse(input, out byte result))
+                {
+                    return result;
+                }
+                Console.Write("Ungültige Eingabe. Bitte eine Zahl eingeben: ");
+            }
+        }
+
+        public static TimeSpan GetUserInputTimeSpan()
+        {
+            while (true)
+            {
+                string input = Console.ReadLine() ?? string.Empty;
+                if (TimeSpan.TryParse(input, out TimeSpan result))
+                {
+                    return result;
+                }
+                Console.Write("Ungültige Eingabe. Bitte eine Zeitspanne im Format hh:mm:ss eingeben: ");
+            }
+        }
+
+        public static DateTime GetUserInputDateTime()
+        {
+            while (true)
+            {
+                string input = Console.ReadLine() ?? string.Empty;
+                if (DateTime.TryParse(input, out DateTime result))
+                {
+                    return result;
+                }
+                Console.Write("Ungültige Eingabe. Bitte ein Datum und eine Uhrzeit im Format TT.MM.JJJJ hh:mm eingeben: ");
+            }
+        }
+
+        public static char GetUserInputChar()
+        {
+            while (true)
+            {
+                string input = Console.ReadLine() ?? string.Empty; // string statt ConsoleKeyInfo umwandeln
+                                                                   // (dann kann user nachdenken vor dem abschicken,
+                                                                   // ansonsten geht es weiter sobald ein key gedrückt wurde
+                if (input.Length == 1)
+                {
+                    return input[0];
+                }
+                Console.Write("Ungültige Eingabe. Bitte ein einzelnes Zeichen eingeben: ");
+            }
+        }
+    }
 }
