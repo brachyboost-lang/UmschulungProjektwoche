@@ -16,7 +16,7 @@ namespace Streiter_Motorsport_Software
             string username = GetUserInput.GetUserInputStr();
 
             Console.WriteLine("Passwort eingeben: ");
-            string password = ;
+            string password = GetUserInput.GetPasswordInput(); //versteckt die Eingabe
             UserManager userManager = new UserManager();
             User? user = userManager.Authenticate(username, password);
             if (user != null)
@@ -53,6 +53,4 @@ namespace Streiter_Motorsport_Software
             Console.WriteLine("5. Abmelden");
         }
     }
-
-    
 }

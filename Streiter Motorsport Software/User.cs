@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Streiter_Motorsport_Software
 {
@@ -65,16 +67,7 @@ namespace Streiter_Motorsport_Software
     // Hilfsklasse für Benutzereingaben
     public static class GetUserInput
     {
-        public static string PromptUsername()
-        {
-            Console.Write("Bitte geben Sie Ihren Nutzernamen ein: ");
-            return Console.ReadLine() ?? string.Empty;
-        }
-        public static string PromptPassword()
-        {
-            Console.Write("Bitte geben Sie Ihr Passwort ein: ");
-            return Console.ReadLine() ?? string.Empty;
-        }
+        
         public static string GetUserInputStr()
         {
             return Console.ReadLine() ?? string.Empty;
@@ -145,5 +138,41 @@ namespace Streiter_Motorsport_Software
                 Console.Write("Ungültige Eingabe. Bitte ein einzelnes Zeichen eingeben: ");
             }
         }
+
+        public static string GetPasswordInput(bool mask = true)
+        {
+            // KI Snippet: Passwort Eingabe mit Maskierung
+            var sb = new StringBuilder();   // StringBuilder zum Speichern der Eingabe
+            ConsoleKeyInfo keyInfo;
+            while ((keyInfo = Console.ReadKey(intercept: true)).Key != ConsoleKey.Enter) // solange kein enter gedrückt wurde = eingabe fortsetzen
+            {
+                if (keyInfo.Key == ConsoleKey.Backspace) // wenn backspace gedrückt wurde
+                {
+                    if (sb.Length > 0)
+                    {
+                        sb.Length--;
+                        if (mask)
+                        {
+                            // entferne ein '*'
+                            Console.Write("\b \b");     // bewegt den cursor zurück, überschreibt mit leerzeichen, bewegt cursor zurück
+                        }
+                    }
+                }
+                else if (!char.IsControl(keyInfo.KeyChar)) // wenn kein steuerzeichen gedrückt wurde (z.B. shift, strg, alt)
+                {
+                    sb.Append(keyInfo.KeyChar);
+                    if (mask)
+                    {
+                        Console.Write('*');
+                    }
+                    // wenn mask == false: kein Echo -> Eingabe bleibt unsichtbar
+                }
+            }
+
+            Console.WriteLine();
+            return sb.ToString();
+        }
+    
     }
+
 }
