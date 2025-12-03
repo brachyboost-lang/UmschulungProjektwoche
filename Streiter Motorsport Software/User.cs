@@ -30,6 +30,18 @@ namespace Streiter_Motorsport_Software
         }
     }
 
+    internal class Member : User
+    {
+        public string Simulation { get; set; }
+        public bool AktivesMitglied { get; set; }
+        public Member(string username, string password, byte accessLevel, string simulation, bool active)
+            : base(username, password, accessLevel)
+        {
+            Simulation = simulation;
+            AktivesMitglied = active;
+        }
+    }
+
     internal class UserManager
     {
         private readonly List<User> users = new List<User>();
@@ -67,7 +79,7 @@ namespace Streiter_Motorsport_Software
     // Hilfsklasse für Benutzereingaben
     public static class GetUserInput
     {
-        
+
         public static string GetUserInputStr()
         {
             return Console.ReadLine() ?? string.Empty;
@@ -77,6 +89,10 @@ namespace Streiter_Motorsport_Software
             while (true)
             {
                 string input = Console.ReadLine() ?? string.Empty;
+                if (input.Equals("exit"))
+                {
+                    return 0; // Standardwert zurückgeben, wenn keine Eingabe erfolgt
+                }
                 if (int.TryParse(input, out int result))
                 {
                     return result;
@@ -172,7 +188,7 @@ namespace Streiter_Motorsport_Software
             Console.WriteLine();
             return sb.ToString();
         }
-    
+
     }
 
 }

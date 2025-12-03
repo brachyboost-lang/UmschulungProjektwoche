@@ -27,6 +27,27 @@ using System.Text;
 
 namespace Streiter_Motorsport_Software
 {
+    internal class Simulation
+    {
+        // Basis Klasse für Simulationen
+    }
+    internal class VehicleClasses : Simulation
+    {
+        string Simulation { get; set; }
+        string Fahrzeugklasse { get; set; }
+
+        internal static List<VehicleClasses> fahrzeugklassenliste = new() 
+        {
+            new VehicleClasses("iRacing", "GT3"),
+            new VehicleClasses("LMU", "LMP2"),
+            new VehicleClasses("ACC", "GT3"),
+        };
+        public VehicleClasses(string simulation, string fahrzeugklasse)
+        {
+            Fahrzeugklasse = fahrzeugklasse;
+            Simulation = simulation;
+        }
+    }
     internal class Vehicles
     {
         string Simulation { get; set; }

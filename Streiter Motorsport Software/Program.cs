@@ -7,6 +7,7 @@ namespace Streiter_Motorsport_Software
         static void Main(string[] args)
         {
             Console.WriteLine("Willkommen in der Streiter Motorsport Endurance Software!");
+            Console.WriteLine("Sie können jederzeit mit 0 oder \"exit\" zum vorherigen Menü zurückkehren.");
             MainLoop();
 
         }
@@ -22,20 +23,43 @@ namespace Streiter_Motorsport_Software
             if (user != null)
             {
                 Console.WriteLine($"Willkommen, {user.Username}!");
-                
-                if (user.AccessLevel == 0)
-                {
-                    ShowAdminMenu();
-                }
-                else if (user.AccessLevel == 1)
-                {
-                    Console.WriteLine("Sie haben Verwaltungsrechte.");
-                }
-                else if (user.AccessLevel == 2)
-                {
-                    Console.WriteLine("Sie haben eingeschränkte Benutzerrechte.");
-                }
 
+                while (true)
+                {
+
+                    if (user.AccessLevel == 0)
+                    {
+                        Console.WriteLine("1. Verwaltungsmenü");
+                        Console.WriteLine("2. Adminmenü");
+                        Console.WriteLine("0. Beenden");
+                        switch
+                            (GetUserInput.GetUserInputInt())
+                        {
+                            case 1:
+                                ShowVerwaltungsMenu();
+                                break;
+                            case 2:
+                                ShowAdminMenu();
+                                break;
+                            case 0:
+                                Environment.Exit(0);
+                                break;
+                            default:
+                                Console.WriteLine("Ungültige Auswahl.");
+                                break;
+                        }
+                    }
+                    else if (user.AccessLevel == 1)
+                    {
+                        ShowVerwaltungsMenu();
+                    }
+                    else if (user.AccessLevel == 2)
+                    {
+                        Console.WriteLine("Sie haben eingeschränkte Benutzerrechte.");
+                        Console.WriteLine("Ihr Konto ist im momentanen Entwicklungszustand nutzlos.");
+                    }
+
+                }
             }
             else
             {
@@ -49,8 +73,61 @@ namespace Streiter_Motorsport_Software
             Console.WriteLine("1. Software Benutzer verwalten");
             Console.WriteLine("2. Teammitglieder verwalten");
             Console.WriteLine("3. Events verwalten");
-            Console.WriteLine("4. Systemeinstellungen");
-            Console.WriteLine("5. Abmelden");
+            Console.WriteLine("0. Abmelden");
+        }
+
+        public static void ShowVerwaltungsMenu()
+        {
+            Console.WriteLine("Verwaltungsmenü:");
+            Console.WriteLine("1. Alle Events anzeigen");
+            Console.WriteLine("0. Abmelden");
+        }
+
+        public void VerwaltungsMenu(int input)
+        {
+
+            RaceEventManager raceEventManager = new RaceEventManager();
+            switch (input)
+            {
+                case 1:
+
+                    int id = 0;
+                    foreach (var raceEvent in raceEventManager.raceEvents)
+                    {
+                        id++;
+                        Console.WriteLine($"ID: {id}, Event: {raceEvent.EventName}, Simulation: {raceEvent.Simulation}, Datum: {raceEvent.EventDate}, Dauer: {raceEvent.Duration}");
+                    }
+                    int choice = GetUserInput.GetUserInputInt();
+
+                    break;
+                case 0:
+                    MainLoop();
+                    break;
+            }
+        }
+        public void AdminMenu(int input)
+        {
+            switch (input)
+            {
+                case 1:
+                    UserManager userManager = new UserManager();
+                    // Benutzerverwaltungsfunktionen hier implementieren
+                    break;
+                case 2:
+                    // Teammitgliedverwaltungsfunktionen hier implementieren
+                    break;
+                case 3:
+                    Console.WriteLine("Simulation auswählen:");
+                    Console.WriteLine("1. Assetto Corsa Competizione");
+                    Console.WriteLine("2. iRacing");
+                    Console.WriteLine("3. Le Mans Ultimate");
+                    
+                    // Eventverwaltungsfunktionen hier implementieren
+                    break;
+                case 0:
+                    MainLoop();
+                    break;
+            }
         }
     }
 }
