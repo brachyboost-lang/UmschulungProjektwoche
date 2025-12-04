@@ -5,57 +5,6 @@ using System.Text;
 namespace Streiter_Motorsport_Software
 {
 
-    internal interface IRaceEvents
-    {
-        public void ChangeDuration(TimeSpan duration);
-        public void AddVehicle(VehicleClasses classes);
-        public void RemoveVehicle(VehicleClasses classes);
-        public void SetDateTime(DateTime time);
-
-    }
-    internal class RaceEvents : IRaceEvents
-    {
-        public string EventName { get; set; }
-        public string Simulation { get; set; }
-        public DateTime EventDate { get; set; } // Datum und Uhrzeit des events
-        public TimeSpan Duration { get; set; } // time span für dauer des events
-        public List<VehicleClasses> ParticipatingVehicles { get; set; } = new(); //lässt Fahrzeugklasse hinzufügen
-        public RaceEvents(string eventName, string simulation, TimeSpan duration)
-        {
-            EventName = eventName;
-            Simulation = simulation;
-            Duration = duration;
-        }
-
-        public void ChangeDuration(TimeSpan newDuration) // ermöglicht nachträgliche änderung der event dauer
-        {
-            Duration = newDuration;
-        }
-
-        public void AddVehicle(VehicleClasses vehicle) // ermöglicht hinzufügen von fahrzeugen zum event
-        {
-            ParticipatingVehicles.Add(vehicle);
-        }
-
-        public void RemoveVehicle(VehicleClasses vehicle)
-        {
-            // ermöglicht entfernen von fahrzeugen aus dem event
-            ParticipatingVehicles.Remove(vehicle);
-        }
-
-        public void SetDateTime(DateTime eventDate) // ermöglicht setzen des datums und der uhrzeit des events
-        {
-            EventDate = eventDate;
-        }
-    }
-    internal class RaceEventManager
-    {
-        internal readonly List<RaceEvents> raceEvents = new();
-        public void AddRaceEvent(RaceEvents raceEvent)
-        {
-            raceEvents.Add(raceEvent);
-        }
-    }
     // EventMember: einfaches Mitglieds-Objekt.
     // IDs werden hier als int verwaltet (keine GUIDs), einfacher und überschaubar.
     internal class EventMember
@@ -93,6 +42,7 @@ namespace Streiter_Motorsport_Software
         internal int Id { get; private set; }                // Einfache int-ID
         internal string Name { get; set; }                   // Name des Events
         internal string Simulation { get; set; }             // Zugehörige Simulation
+        internal int Dauer { get; set; }                     // Dauer in Minuten
 
         // Vorschläge: Fahrzeugklassen, die zur Simulation passen.
         internal List<VehicleClasses> VorgeschlageneFahrzeugklassen { get; private set; }
@@ -103,7 +53,7 @@ namespace Streiter_Motorsport_Software
         // Angemeldete Mitglieder für das Event.
         internal List<EventMember> Mitglieder { get; private set; }
 
-        public Event(string name, string simulation)
+        public Event(string name, string simulation, int dauer)
         {
             // ID zuweisen
             Id = naechsteId;
@@ -111,16 +61,17 @@ namespace Streiter_Motorsport_Software
 
             Name = name;
             Simulation = simulation;
+            Dauer = dauer;
+
 
             VorgeschlageneFahrzeugklassen = new List<VehicleClasses>();
             AusgewählteFahrzeugklassen = new List<VehicleClasses>();
             Mitglieder = new List<EventMember>();
 
-            // Fülle die Vorschlagsliste ohne LINQ, mit einfacher Schleife.
-            // Wir durchsuchen die zentrale fahrzeugklassenliste und fügen passende Einträge hinzu.
+            // Fülle die Vorschlagsliste mit foreach Schleife.
+            // durchsucht zentrale fahrzeugklassenliste und fügt passenden Eintrag hinzu.
             foreach (VehicleClasses vc in VehicleClasses.fahrzeugklassenliste)
             {
-                // String-Vergleich: in C# kann man == verwenden, es vergleicht den Inhalt von strings.
                 if (vc.Simulation == simulation)
                 {
                     VorgeschlageneFahrzeugklassen.Add(vc);
@@ -171,7 +122,7 @@ namespace Streiter_Motorsport_Software
         }
 
         // Liefert alle Fahrzeuge, die zur Event-Simulation passen und zu den ausgewählten Klassen gehören.
-        // Rückgabe als List<Vehicles>.
+        // Rückgabe als List<Vehicles>. <- Brainfuck
         internal List<Vehicles> VerfügbareFahrzeugeFürAusgewählteKlassen()
         {
             List<Vehicles> ergebnis = new List<Vehicles>();
@@ -281,15 +232,14 @@ namespace Streiter_Motorsport_Software
         internal static List<Event> Events { get; private set; } = new List<Event>();
 
         // Erstellt ein Event und speichert es in der Liste.
-        internal static Event ErzeugeEvent(string name, string simulation)
+        internal static Event ErzeugeEvent(string name, string simulation, int dauer)
         {
-            Event ev = new Event(name, simulation);
+            Event ev = new Event(name, simulation, dauer);
             Events.Add(ev);
             return ev;
         }
 
         // Liefert eine Liste von Fahrzeugklassen für die angegebene Simulation.
-        // Keine LINQ; wir verwenden einfache Schleifen.
         internal static List<VehicleClasses> SchlageFahrzeugklassenVor(string simulation)
         {
             List<VehicleClasses> ergebnis = new List<VehicleClasses>();
@@ -303,7 +253,7 @@ namespace Streiter_Motorsport_Software
             return ergebnis;
         }
 
-        // Liefert Fahrzeuge für eine Simulation und Fahrzeugklasse.
+        // das gleiche für Fahrzeuge
         internal static List<Vehicles> SchlageFahrzeugeVor(string simulation, string fahrzeugklasse)
         {
             List<Vehicles> ergebnis = new List<Vehicles>();

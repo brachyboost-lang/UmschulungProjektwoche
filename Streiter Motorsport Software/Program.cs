@@ -85,17 +85,16 @@ namespace Streiter_Motorsport_Software
 
         public void VerwaltungsMenu(int input)
         {
-
-            RaceEventManager raceEventManager = new RaceEventManager();
             switch (input)
             {
                 case 1:
-
+                    // use central EventManager.Events list instead of a RaceEventManager instance
                     int id = 0;
-                    foreach (var raceEvent in raceEventManager.raceEvents)
+                    foreach (var ev in EventManager.Events)
                     {
                         id++;
-                        Console.WriteLine($"ID: {id}, Event: {raceEvent.EventName}, Simulation: {raceEvent.Simulation}, Datum: {raceEvent.EventDate}, Dauer: {raceEvent.Duration}");
+                        // Event has properties: Name, Simulation, ... (adjust to your Event property names)
+                        Console.WriteLine($"ID: {id}, Event: {ev.Name}, Simulation: {ev.Simulation}, Dauer: {ev.Dauer}");
                     }
                     int choice = GetUserInput.GetUserInputInt();
 
