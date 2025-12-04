@@ -5,7 +5,7 @@ using System.Text;
 
 //iRacing GT3 Fahrzeuge: Audi R8 LMS Evo II GT3, BMW M4 GT3, Chevrolet Corvette Z06 GT3.R, Ferrari 296 GT3, Ford Mustang GT3, Lamborghini Huracán GT3 EVO, McLaren 720S GT3 EVO, Mercedes-AMG GT3 2020, Porsche 911 GT3 R (992), Acura NSX GT3 EVO 22 
 
- 
+
 
 //LMU Fahrzeugkategorien: Hypercar, LMP2, GT3, GTE 
 
@@ -17,7 +17,7 @@ using System.Text;
 
 //LMU GTE Fahrzeuge: Aston Martin Vantage GTE, Chevrolet Corvette C8.R, Ferrari 488 GTE Evo, Porsche 911 RSR-19 
 
- 
+
 
 //ACC Fahrzeugkategorien: GT3, GT4, M2 
 
@@ -76,6 +76,7 @@ namespace Streiter_Motorsport_Software
             Fahrzeugname = fahrzeugname;
             Simulation = simulation;
         }
-
     }
 }
+    
+

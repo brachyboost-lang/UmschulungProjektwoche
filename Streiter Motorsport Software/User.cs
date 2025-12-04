@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Streiter_Motorsport_Software
 {
-    // User zum Anmelden in der Software
+    // Admin und Benutzerverwaltung (EventMember ausgeschlossen)
     internal class User
     {
         public string Username { get; set; }
@@ -27,18 +27,6 @@ namespace Streiter_Motorsport_Software
         public void ChangePassword(string newPassword)
         {
             Password = newPassword;
-        }
-    }
-
-    internal class Member : User
-    {
-        public string Simulation { get; set; }
-        public bool AktivesMitglied { get; set; }
-        public Member(string username, string password, byte accessLevel, string simulation, bool active)
-            : base(username, password, accessLevel)
-        {
-            Simulation = simulation;
-            AktivesMitglied = active;
         }
     }
 
