@@ -29,36 +29,45 @@ namespace Streiter_Motorsport_Software
 {
     internal class Simulation
     {
-        // Basis Klasse für Simulationen
+        // Basis Klasse für Simulationen (Platzhalter)
+        // Keine Logik hier, dient nur als gemeinsame Basisklasse.
     }
+
     internal class VehicleClasses : Simulation
     {
-        string Simulation { get; set; }
-        string Fahrzeugklasse { get; set; }
+        // Sichtbarkeit internal, damit andere Klassen im Projekt darauf zugreifen können.
+        internal string Simulation { get; set; }    // z.B. "iRacing", "LMU", "ACC"
+        internal string Fahrzeugklasse { get; set; } // z.B. "GT3", "LMP2"
 
-        internal static List<VehicleClasses> fahrzeugklassenliste = new() 
+        // Zentrale Liste aller Fahrzeugklassen.
+        // List<T> ist eine Standard-Sammlung aus dem Framework, die Elemente speichert.
+        // Methoden: Add fügt ein Element hinzu, Count liefert die Anzahl, foreach zum Durchlaufen.
+        internal static List<VehicleClasses> fahrzeugklassenliste = new List<VehicleClasses>()
         {
             new VehicleClasses("iRacing", "GT3"),
             new VehicleClasses("LMU", "LMP2"),
             new VehicleClasses("ACC", "GT3"),
         };
+
         public VehicleClasses(string simulation, string fahrzeugklasse)
         {
             Fahrzeugklasse = fahrzeugklasse;
             Simulation = simulation;
         }
     }
+
     internal class Vehicles
     {
-        string Simulation { get; set; }
-        string Fahrzeugklasse { get; set; }
-        string Fahrzeugname { get; set; }
-        internal static List<Vehicles> fahrzeugeliste = new() // macht das gleiche wie new List<Vehicles>()
+        internal string Simulation { get; set; }      // Zugehörige Simulation
+        internal string Fahrzeugklasse { get; set; }  // Zugehörige Fahrzeugklasse
+        internal string Fahrzeugname { get; set; }   // Name des Fahrzeugs
+
+        // Zentrale Fahrzeugliste.
+        internal static List<Vehicles> fahrzeugeliste = new List<Vehicles>()
         {
             new Vehicles("iRacing", "GT3", "Audi R8 LMS Evo II GT3"),
             new Vehicles("LMU", "LMP2", "Oreca 07 Gibson (WEC LMP2)"),
             new Vehicles("ACC", "GT3", "Aston Martin V12 Vantage GT3"),
-
         };
 
         public Vehicles(string simulation, string fahrzeugklasse, string fahrzeugname)
