@@ -20,7 +20,7 @@ namespace Streiter_Motorsport_Software
         {
             // ID zuweisen und Zähler erhöhen
             Id = naechsteId;
-            naechsteId = naechsteId + 1;
+            naechsteId = naechsteId ++;
 
             Name = name;
         }
@@ -57,7 +57,7 @@ namespace Streiter_Motorsport_Software
         {
             // ID zuweisen
             Id = naechsteId;
-            naechsteId = naechsteId + 1;
+            naechsteId = naechsteId ++;
 
             Name = name;
             Simulation = simulation;
@@ -125,7 +125,7 @@ namespace Streiter_Motorsport_Software
         // Rückgabe als List<Vehicles>. <- Brainfuck
         internal List<Vehicles> VerfügbareFahrzeugeFürAusgewählteKlassen()
         {
-            List<Vehicles> ergebnis = new List<Vehicles>();
+            List<Vehicles> ergebnis = new();
 
             // Wenn keine Klassen ausgewählt sind, ist die Ergebnisliste leer.
             if (AusgewählteFahrzeugklassen.Count == 0)
@@ -165,7 +165,7 @@ namespace Streiter_Motorsport_Software
         // Fügt ein Mitglied hinzu und gibt das Objekt zurück.
         internal EventMember FuegeMitgliedHinzu(string name)
         {
-            EventMember m = new EventMember(name);
+            EventMember m = new(name); // macht das gleiche wie m = new EventMember(name);- auch mit parameterübergabe abkürzbar
             Mitglieder.Add(m);
             return m;
         }
@@ -229,7 +229,7 @@ namespace Streiter_Motorsport_Software
     // Einfacher Manager zur zentralen Verwaltung von Events.
     internal static class EventManager
     {
-        internal static List<Event> Events { get; private set; } = new List<Event>();
+        internal static List<Event> Events { get; private set; } = new();
 
         // Erstellt ein Event und speichert es in der Liste.
         internal static Event ErzeugeEvent(string name, string simulation, int dauer)
