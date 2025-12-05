@@ -23,7 +23,7 @@ namespace Streiter_Motorsport_Software
         internal List<VehicleClasses> AusgewählteFahrzeugklassen { get; private set; }
 
         // Angemeldete Mitglieder für das Event.
-        internal List<EventMember> Mitglieder { get; private set; }
+        internal List<EventMember> AngemeldeteMitglieder { get; private set; }
 
         public Event(string name, string simulation, int dauer)
         {
@@ -38,7 +38,7 @@ namespace Streiter_Motorsport_Software
 
             VorgeschlageneFahrzeugklassen = new List<VehicleClasses>();
             AusgewählteFahrzeugklassen = new List<VehicleClasses>();
-            Mitglieder = new List<EventMember>();
+            AngemeldeteMitglieder = new List<EventMember>();
 
             // Fülle die Vorschlagsliste mit foreach Schleife.
             // durchsucht zentrale fahrzeugklassenliste und fügt passenden Eintrag hinzu.
@@ -138,7 +138,7 @@ namespace Streiter_Motorsport_Software
         internal EventMember FuegeMitgliedHinzu(string name)
         {
             EventMember m = new(name); // macht das gleiche wie m = new EventMember(name);- auch mit parameterübergabe abkürzbar
-            Mitglieder.Add(m);
+            AngemeldeteMitglieder.Add(m);
             return m;
         }
 
@@ -156,7 +156,7 @@ namespace Streiter_Motorsport_Software
 
             // Prüfen, ob das Mitglied zu diesem Event gehört (Vergleich über ID)
             bool mitgliedGefunden = false;
-            foreach (EventMember m in Mitglieder)
+            foreach (EventMember m in AngemeldeteMitglieder)
             {
                 if (m.Id == mitglied.Id)
                 {
