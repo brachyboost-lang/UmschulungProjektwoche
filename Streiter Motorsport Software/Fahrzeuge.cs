@@ -29,14 +29,17 @@ namespace Streiter_Motorsport_Software
 {
     internal class Simulation
     {
-        // Basis Klasse für Simulationen (Platzhalter)
-        // Keine Logik hier, dient nur als gemeinsame Basisklasse.
+        internal string Game { get; set; }    // z.B. "iRacing", "LMU", "ACC"
+
+        public Simulation(string game)
+        {
+            Game = game;
+        }
     }
 
     internal class VehicleClasses : Simulation
     {
         // Sichtbarkeit internal, damit andere Klassen im Projekt darauf zugreifen können.
-        internal string Simulation { get; set; }    // z.B. "iRacing", "LMU", "ACC"
         internal string Fahrzeugklasse { get; set; } // z.B. "GT3", "LMP2"
 
         // Zentrale Liste aller Fahrzeugklassen.
@@ -49,10 +52,10 @@ namespace Streiter_Motorsport_Software
             new VehicleClasses("ACC", "GT3"),
         };
 
-        public VehicleClasses(string simulation, string fahrzeugklasse)
+        public VehicleClasses(string fahrzeugklasse, string game) : base(game)
         {
             Fahrzeugklasse = fahrzeugklasse;
-            Simulation = simulation;
+            Game = game;
         }
     }
 

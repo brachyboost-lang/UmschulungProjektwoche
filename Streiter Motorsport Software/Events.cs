@@ -5,34 +5,6 @@ using System.Text;
 namespace Streiter_Motorsport_Software
 {
 
-    // EventMember: einfaches Mitglieds-Objekt.
-    // IDs werden hier als int verwaltet (keine GUIDs), einfacher und überschaubar.
-    internal class EventMember
-    {
-        // Statischer Zähler zur Vergabe einfacher, inkrementeller IDs.
-        private static int naechsteId = 1;
-
-        internal int Id { get; private set; }           // Eindeutige einfache ID
-        internal string Name { get; set; }              // Anzeigename des Mitglieds
-        internal Vehicles GewaehltesFahrzeug { get; private set; } // Gewähltes Fahrzeug (kann null sein)
-
-        public EventMember(string name)
-        {
-            // ID zuweisen und Zähler erhöhen
-            Id = naechsteId;
-            naechsteId = naechsteId ++;
-
-            Name = name;
-        }
-
-        // Setzt das gewählte Fahrzeug für dieses Mitglied.
-        // Validierungen (ob das Fahrzeug erlaubt ist) erfolgen in der Event-Logik.
-        internal void WähleFahrzeug(Vehicles fahrzeug)
-        {
-            GewaehltesFahrzeug = fahrzeug;
-        }
-    }
-
     // Event: einfache Darstellung einer Veranstaltung.
     // Verwendet nur einfache Konstrukte: int-IDs, List<T>, foreach-Schleifen.
     internal class Event
@@ -72,7 +44,7 @@ namespace Streiter_Motorsport_Software
             // durchsucht zentrale fahrzeugklassenliste und fügt passenden Eintrag hinzu.
             foreach (VehicleClasses vc in VehicleClasses.fahrzeugklassenliste)
             {
-                if (vc.Simulation == simulation)
+                if (vc.Game == simulation)
                 {
                     VorgeschlageneFahrzeugklassen.Add(vc);
                 }
@@ -92,7 +64,7 @@ namespace Streiter_Motorsport_Software
             bool gefunden = false;
             foreach (VehicleClasses v in VorgeschlageneFahrzeugklassen)
             {
-                if (v.Simulation == klasse.Simulation && v.Fahrzeugklasse == klasse.Fahrzeugklasse)
+                if (v.Game == klasse.Game && v.Fahrzeugklasse == klasse.Fahrzeugklasse)
                 {
                     gefunden = true;
                     break;
@@ -108,7 +80,7 @@ namespace Streiter_Motorsport_Software
             bool bereitsVorhanden = false;
             foreach (VehicleClasses v in AusgewählteFahrzeugklassen)
             {
-                if (v.Simulation == klasse.Simulation && v.Fahrzeugklasse == klasse.Fahrzeugklasse)
+                if (v.Game == klasse.Game && v.Fahrzeugklasse == klasse.Fahrzeugklasse)
                 {
                     bereitsVorhanden = true;
                     break;
@@ -232,9 +204,9 @@ namespace Streiter_Motorsport_Software
         internal static List<Event> Events { get; private set; } = new();
 
         // Erstellt ein Event und speichert es in der Liste.
-        internal static Event ErzeugeEvent(string name, string simulation, int dauer)
+        internal static Event ErzeugeEvent(string name, string game, int dauer)
         {
-            Event ev = new Event(name, simulation, dauer);
+            Event ev = new Event(name, game, dauer);
             Events.Add(ev);
             return ev;
         }
@@ -245,7 +217,7 @@ namespace Streiter_Motorsport_Software
             List<VehicleClasses> ergebnis = new List<VehicleClasses>();
             foreach (VehicleClasses vc in VehicleClasses.fahrzeugklassenliste)
             {
-                if (vc.Simulation == simulation)
+                if (vc.Game == simulation)
                 {
                     ergebnis.Add(vc);
                 }
@@ -267,6 +239,35 @@ namespace Streiter_Motorsport_Software
             return ergebnis;
         }
     }
+    // EventMember: einfaches Mitglieds-Objekt.
+    // IDs werden hier als int verwaltet (keine GUIDs), einfacher und überschaubar.
+    internal class EventMember
+    {
+        // Statischer Zähler zur Vergabe einfacher, inkrementeller IDs.
+        private static int naechsteId = 1;
+
+        internal int Id { get; private set; }           // Eindeutige einfache ID
+        internal string Name { get; set; }              // Anzeigename des Mitglieds
+        internal Vehicles GewaehltesFahrzeug { get; private set; } // Gewähltes Fahrzeug (kann null sein)
+
+        public EventMember(string name)
+        {
+            // ID zuweisen und Zähler erhöhen
+            Id = naechsteId;
+            naechsteId = naechsteId ++;
+
+            Name = name;
+            
+        }
+
+        // Setzt das gewählte Fahrzeug für dieses Mitglied.
+        // Validierungen (ob das Fahrzeug erlaubt ist) erfolgen in der Event-Logik.
+        internal void WähleFahrzeug(Vehicles fahrzeug)
+        {
+            GewaehltesFahrzeug = fahrzeug;
+        }
+    }
+
 }
 
 
