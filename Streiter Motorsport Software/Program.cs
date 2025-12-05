@@ -6,6 +6,98 @@ namespace Streiter_Motorsport_Software
     {
         static void Main(string[] args)
         {
+            EventMember aLang = new EventMember("alexander lang");
+            EventMember eAkay = new EventMember("edo akay");
+            EventMember jMayer = new EventMember("johannes mayer");
+            EventMember mSwatko = new EventMember("meik swatko");
+            EventMember mBauduihn = new EventMember("marco bauduihn");
+            EventMember aScheidel = new EventMember("alex scheidel");
+            EventMember bJung = new EventMember("basti jung");
+            EventMember vMissler = new EventMember("vincent missler");
+            EventMember bKaragoez = new EventMember("bedran karagöz");
+            EventMember bWolf = new("ben wolf");
+            EventMember bWagner = new("benjamin wagner");
+            EventMember cBalter = new("christian balter");
+            EventMember cLehnert = new("christian lehnert");
+            EventMember dStraube = new("danny straube");
+            EventMember dMilesan = new("darius milesan");
+            EventMember dMioska = new("david mioska");
+            EventMember dWegel = new("dustin wegel");
+            EventMember eBaumgartner = new("elia baumgartner");
+            EventMember eKoenig = new("elijas könig");
+            EventMember eDalgic = new("erkan dalgic");
+            EventMember fWagner = new("fabian-maurice wagner");
+            EventMember hRenk = new("heiko renk");
+            EventMember jSchulze = new("jeremy schulze");
+            EventMember lDeymann = new("leon deymann");
+            EventMember lBlaschke = new("luca blaschke");
+            EventMember lTrapani = new("luca trapani");
+            EventMember lBorchmann = new("lucas borchmann");
+            EventMember mNaujok = new("maikel naujok");
+            EventMember mLaufenburg = new("marc von laufenburg");
+            EventMember mDaiberl = new("matthäus daiberl");
+            EventMember mDobbelstein = new("max dobbelstein");
+            EventMember nDenzel = new("niklas denzel");
+            EventMember nBunsh = new("nils bunsh");
+            EventMember nKadur = new("noah kadur");
+            EventMember pHans = new("paul hans");
+            EventMember pSolinke = new("paul solinke");
+            EventMember pSchneider = new("phillip schneider");
+            EventMember rXanatos = new("ray xanatos");
+            EventMember roman = new("roman");
+            EventMember sStansen = new("sven stansen");
+            EventMember tBock = new("tobias bock");
+            EventMember tWillgalis = new("tobias willgalis");
+            EventMember tKempin = new("tom kempin");
+            EventMember tHam = new("totti ham");
+            EventMember cWillhalm = new("christoph willhalm");
+            EventMember dBartodziej = new("dennis bartodziej");
+            EventMember fBissani = new("frederic bissani");
+            EventMember sBidian = new("s. Bidian");
+            EventMember aSpang = new("aaron spang");
+            EventMember aStedler = new("aaron stedler");
+            EventMember aHeinz = new("anton heinz");
+            EventMember aMihulka = new("arkadius mihulka");
+            EventMember bMiksa = new("benjamin miska");
+            EventMember cSchulz = new("christian schulz");
+            EventMember cDimcescu = new("cristian dimcescu");
+            EventMember dVisciglia = new("dario visciglia");
+            EventMember dIsgro = new("devin isgro");
+            EventMember eErdei = new("erhard erdei");
+            EventMember gEggerl = new("german eggerl");
+            EventMember gScheelen = new("gerrit scheelen");
+            EventMember hWolters = new("h. wolters");
+            EventMember hSüßmann = new("holger süßmann");
+            EventMember jSlow = new("j. slow");
+            EventMember jKampke = new("jan kampke");
+            EventMember jPaul = new("jannik paul");
+            EventMember jStevens = new("jason stevens");
+            EventMember kGorelik = new("k. Gorelik");
+            EventMember lSnowman = new("l. snowman");
+            EventMember lJaumann = new("leon jaumann");
+            EventMember lErsing = new("leopold ersing");
+            EventMember lTrost = new("lisa trost");
+            EventMember lWagner = new("lorenz wagner");
+            EventMember lKern = new("lukas kern");
+            EventMember mAydin = new("mesut aydin");
+            EventMember mVersteppen = new("max versteppen");
+            EventMember mAllemann = new("marc allemann");
+            EventMember mSommerlad = new("marcel sommerlad");
+            EventMember mKoch = new("mathias koch");
+            EventMember mFunck = new("mike funck");
+            EventMember nMei = new("n. mei");
+            EventMember nRethfeldt = new("nico rethfeldt");
+            EventMember nGoettert = new("nils göttert");
+            EventMember oPlavac = new("oliver plavac");
+            EventMember pHoffmann = new("pascal hoffmann");
+            EventMember pSchwob = new("phillip schwob");
+            EventMember sSchroedel = new("simon schrödel");
+            EventMember sDelalut = new("stefan delalut");
+            EventMember tMeier = new("thomas meier");
+            EventMember tWolff = new("thomas wolff");
+            EventMember tKeirsbulck = new("timo keirsbulck");
+            
+
             Console.WriteLine("Willkommen in der Streiter Motorsport Endurance Software!");
             Console.WriteLine("Sie können jederzeit mit 0 oder \"exit\" zum vorherigen Menü zurückkehren.");
             MainLoop();
@@ -88,12 +180,10 @@ namespace Streiter_Motorsport_Software
             switch (input)
             {
                 case 1:
-                    // use central EventManager.Events list instead of a RaceEventManager instance
                     int id = 0;
                     foreach (var ev in EventManager.Events)
                     {
                         id++;
-                        // Event has properties: Name, Simulation, ... (adjust to your Event property names)
                         Console.WriteLine($"ID: {id}, Event: {ev.Name}, Simulation: {ev.Simulation}, Dauer: {ev.Dauer}");
                     }
                     int choice = GetUserInput.GetUserInputInt();
