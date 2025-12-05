@@ -249,6 +249,7 @@ namespace Streiter_Motorsport_Software
         internal int Id { get; private set; }           // Eindeutige einfache ID
         internal string Name { get; set; }              // Anzeigename des Mitglieds
         internal Vehicles GewaehltesFahrzeug { get; private set; } // Gewähltes Fahrzeug (kann null sein)
+        internal static List<EventMember> Mitgliederliste { get; private set; } = new();
 
         public EventMember(string name)
         {
@@ -257,7 +258,8 @@ namespace Streiter_Motorsport_Software
             naechsteId = naechsteId ++;
 
             Name = name;
-            
+            Mitgliederliste.Add(this); // fügt dieses mitglied direkt auf die mitgliederliste hinzu
+
         }
 
         // Setzt das gewählte Fahrzeug für dieses Mitglied.
