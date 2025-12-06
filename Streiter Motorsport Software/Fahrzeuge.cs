@@ -47,9 +47,20 @@ namespace Streiter_Motorsport_Software
         // Methoden: Add fügt ein Element hinzu, Count liefert die Anzahl, foreach zum Durchlaufen.
         internal static List<VehicleClasses> fahrzeugklassenliste = new List<VehicleClasses>()
         {
-            new VehicleClasses("iRacing", "GT3"),
-            new VehicleClasses("LMU", "LMP2"),
-            new VehicleClasses("ACC", "GT3"),
+            new VehicleClasses("GT3", "iRacing"),
+            new VehicleClasses("LMP2", "iRacing"),
+            new VehicleClasses("GTP", "iRacing"),
+            new VehicleClasses("LMP1", "iRacing"),
+            new VehicleClasses("GT4", "iRacing"),
+            new VehicleClasses("LMP2", "LMU"),
+            new VehicleClasses("Hypercar", "LMU"),
+            new VehicleClasses("GTE", "LMU"),
+            new VehicleClasses("GT3", "LMU"),
+            new VehicleClasses("LMP3", "LMU"),
+            new VehicleClasses("GT3", "ACC"),
+            new VehicleClasses("GT4", "ACC"),
+            new VehicleClasses("M2", "ACC"),
+            new VehicleClasses("ST", "ACC")
         };
 
         public VehicleClasses(string fahrzeugklasse, string game) : base(game)

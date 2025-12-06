@@ -96,7 +96,7 @@ namespace Streiter_Motorsport_Software
             EventMember tMeier = new("thomas meier");
             EventMember tWolff = new("thomas wolff");
             EventMember tKeirsbulck = new("timo keirsbulck");
-            
+
 
             Console.WriteLine("Willkommen in der Streiter Motorsport Endurance Software!");
             Console.WriteLine("Sie können jederzeit mit 0 oder \"exit\" zum vorherigen Menü zurückkehren.");
@@ -118,6 +118,7 @@ namespace Streiter_Motorsport_Software
 
                 while (true)
                 {
+                    Program program = new Program();
 
                     if (user.AccessLevel == 0)
                     {
@@ -129,9 +130,11 @@ namespace Streiter_Motorsport_Software
                         {
                             case 1:
                                 ShowVerwaltungsMenu();
+                                program.VerwaltungsMenu(GetUserInput.GetUserInputInt());
                                 break;
                             case 2:
                                 ShowAdminMenu();
+                                program.AdminMenu(GetUserInput.GetUserInputInt());
                                 break;
                             case 0:
                                 Environment.Exit(0);
@@ -149,6 +152,7 @@ namespace Streiter_Motorsport_Software
                     {
                         Console.WriteLine("Sie haben eingeschränkte Benutzerrechte.");
                         Console.WriteLine("Ihr Konto ist im momentanen Entwicklungszustand nutzlos.");
+                        Console.WriteLine("In Zukunft soll sich dieses Konto an Events selber anmelden können.");
                     }
 
                 }
@@ -210,7 +214,7 @@ namespace Streiter_Motorsport_Software
                     Console.WriteLine("1. Assetto Corsa Competizione");
                     Console.WriteLine("2. iRacing");
                     Console.WriteLine("3. Le Mans Ultimate");
-                    
+
                     // Eventverwaltungsfunktionen hier implementieren
                     break;
                 case 0:
