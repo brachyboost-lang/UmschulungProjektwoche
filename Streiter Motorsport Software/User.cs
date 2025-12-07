@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Streiter_Motorsport_Software
 {
@@ -139,6 +140,7 @@ namespace Streiter_Motorsport_Software
 
         public static DateTime GetUserInputDateTime()
         {
+            Console.WriteLine("Bitte ein Datum und eine Uhrzeit im Format TT.MM.JJJJ hh: mm eingeben: ");
             while (true)
             {
                 string input = Console.ReadLine() ?? string.Empty;
@@ -154,7 +156,7 @@ namespace Streiter_Motorsport_Software
         {
             while (true)
             {
-                string input = Console.ReadLine() ?? string.Empty; // string statt ConsoleKeyInfo umwandeln
+                string input = Console.ReadLine().ToLower() ?? string.Empty; // string statt ConsoleKeyInfo umwandeln
                                                                    // (dann kann user nachdenken vor dem abschicken,
                                                                    // ansonsten geht es weiter sobald ein key gedrückt wurde
                 if (input.Length == 1)

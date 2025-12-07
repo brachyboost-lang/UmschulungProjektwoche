@@ -89,16 +89,16 @@ namespace Streiter_Motorsport_Software
             this.Datum = GetUserInput.GetUserInputDateTime();
             Console.WriteLine("Fahrzeugklassen auswählen: ");
             this.VorgeschlageneFahrzeugklassen = EventManager.SchlageFahrzeugklassenVor(this.Simulation);
-               for (int i = 0; i < this.VorgeschlageneFahrzeugklassen.Count; i++)
+            for (int i = 0; i < this.VorgeschlageneFahrzeugklassen.Count; i++)
             {
                 Console.WriteLine($"{i + 1}. {this.VorgeschlageneFahrzeugklassen[i].Fahrzeugklasse}");
             }
-               Console.WriteLine("Geben Sie die Nummern der gewünschten Fahrzeugklassen ein, getrennt durch Kommas: (z.B. 1, 5, 6");
+            Console.WriteLine("Geben Sie die Nummern der gewünschten Fahrzeugklassen ein, getrennt durch Kommas: (z.B. 1, 5, 6");
             int eingabe = GetUserInput.GetUserInputInt();
             string[] ausgewaehlteNummern = eingabe.ToString().Split(','); // trennt die eingabe in einzelne nummern auf
             for (int i = 0; i < ausgewaehlteNummern.Length; i++)
             {
-                if (int.TryParse(ausgewaehlteNummern[i].Trim(), out int nummer))
+                if (int.TryParse(ausgewaehlteNummern[i].Trim(), out int nummer)) // trimmt leerzeichen und prüft ob es eine gültige zahl ist
                 {
                     if (nummer >= 1 && nummer <= this.VorgeschlageneFahrzeugklassen.Count)
                     {
@@ -116,15 +116,147 @@ namespace Streiter_Motorsport_Software
                 }
             }
             Console.WriteLine("Event erstellt. Folgende Auswahl wurde getroffen: ");
-            Console.WriteLine($"Simulation: {this.Simulation}, Dauer: {this.Dauer} Minuten, Strecke: {this.Strecke}, Datum: {this.Datum.ToShortDateString()}");
-            Console.WriteLine($"Fahrzeugklassen: ");
-            foreach (var klasse in this.AusgewählteFahrzeugklassen)
+            bool finalValid = false;
+            while (!finalValid)
             {
-                Console.WriteLine($"- {klasse.Fahrzeugklasse}");
-            }
+                Console.WriteLine($"Simulation: {this.Simulation}, Dauer: {this.Dauer} Minuten, Strecke: {this.Strecke}, Datum: {this.Datum.ToShortDateString()}");
+                Console.WriteLine($"Fahrzeugklassen: ");
+                foreach (var klasse in this.AusgewählteFahrzeugklassen)
+                {
+                    Console.WriteLine($"- {klasse.Fahrzeugklasse}");
+                }
+                Console.WriteLine("----------");
+                Console.WriteLine("Ist die Auswahl so korrekt? Y/N");
+                char bestaetigung = GetUserInput.GetUserInputChar();
+                if (bestaetigung == 'Y' || bestaetigung == 'y')
+                {
+                    Console.WriteLine("Event wurde erfolgreich erstellt.");
+                    return this;
+                }
+                else
+                {
+                    Console.WriteLine("Was soll verändert werden?");
+                    Console.WriteLine("1. Simulation");
+                    Console.WriteLine("2. Strecke");
+                    Console.WriteLine("3. Dauer");
+                    Console.WriteLine("4. Datum");
+                    Console.WriteLine("5. Fahrzeugklassen");
+                    Console.WriteLine("0. Bestätigen, alles ist korrekt");
 
-            return this;
+                    int auswahl = GetUserInput.GetUserInputInt();
+                    bool valid = false;
+                    switch (auswahl)
+                    {
+                        case 1:
+                            while (!valid)
+                            {
+                                Console.WriteLine($"Aktuelle Simulation: {this.Simulation}");
+                                Console.WriteLine("In welche Simulation soll das Event geändert werden?");
+                                Console.WriteLine("1. iRacing");
+                                Console.WriteLine("2. Assetto Corsa Competizione");
+                                Console.WriteLine("3. Le Mans Ultimate");
+                                int neueSimulation = GetUserInput.GetUserInputInt();
+                                switch (neueSimulation)
+                                {
+                                    case 1:
+                                        this.Simulation = "iRacing";
+                                        valid = true;
+                                        break;
+
+                                    case 2:
+                                        this.Simulation = "Assetto Corsa Competizione";
+                                        valid = true;
+                                        break;
+                                    case 3:
+                                        this.Simulation = "Le Mans Ultimate";
+                                        valid = true;
+                                        break;
+                                    default:
+                                        Console.WriteLine("Ungültige Auswahl für die Simulation.");
+                                        break;
+
+                                }
+                            }
+                            break;
+                        case 2:
+                            Console.WriteLine($"Aktuelle Strecke: {this.Strecke}");
+                            Console.WriteLine("Geben Sie die neue Strecke ein: ");
+                            this.Strecke = GetUserInput.GetUserInputStr();
+                            break;
+                        case 3:
+                            Console.WriteLine($"Aktuelle Dauer: {this.Dauer}");
+                            Console.WriteLine("Geben Sie die neue Dauer in Minuten ein: ");
+                            this.Dauer = GetUserInput.GetUserInputInt();
+                            break;
+                        case 4:
+                            Console.WriteLine($"Aktuelles Datum: {this.Datum}");
+                            Console.WriteLine("Geben Sie das neue Datum ein: ");
+                            this.Datum = GetUserInput.GetUserInputDateTime();
+                            break;
+                        case 5:
+                            Console.WriteLine($"Aktuelle Fahrzeugklassen: ");
+                            foreach (var klasse in this.AusgewählteFahrzeugklassen)
+                            {
+                                Console.WriteLine($"- {klasse.Fahrzeugklasse}");
+                            }
+                            Console.WriteLine("Wählen Sie Fahrzeugklassen aus zum hinzufügen: ");
+                            this.VorgeschlageneFahrzeugklassen = EventManager.SchlageFahrzeugklassenVor(this.Simulation);
+                            for (int i = 0; i < this.VorgeschlageneFahrzeugklassen.Count; i++)
+                            {
+                                if (this.AusgewählteFahrzeugklassen.Contains(this.VorgeschlageneFahrzeugklassen[i]))
+                                {
+                                    continue; // überspringt bereits ausgewählte klassen
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"{i + 1}. {this.VorgeschlageneFahrzeugklassen[i].Fahrzeugklasse}");
+                                }
+                            }
+                            Console.WriteLine("Geben Sie die Nummern der gewünschten Fahrzeugklassen ein, getrennt durch Kommas: (z.B. 1, 5, 6");
+                            int neueEingabe = GetUserInput.GetUserInputInt();
+                            string[] neueAusgewaehlteNummern = neueEingabe.ToString().Split(',');
+                            for (int i = 0; i < neueAusgewaehlteNummern.Length; i++)
+                            {
+                                if (int.TryParse(neueAusgewaehlteNummern[i].Trim(), out int nummer))
+                                {
+                                    if (nummer >= 1 && nummer <= this.VorgeschlageneFahrzeugklassen.Count)
+                                    {
+                                        VehicleClasses ausgewaehlteKlasse = this.VorgeschlageneFahrzeugklassen[nummer - 1];
+                                        if (this.AusgewählteFahrzeugklassen.Contains(ausgewaehlteKlasse))
+                                        {
+                                            Console.WriteLine($"Fahrzeugklasse {ausgewaehlteKlasse.Fahrzeugklasse} ist bereits ausgewählt. Diese wird übersprungen.");
+                                        }
+                                        else
+                                        {
+                                            this.AusgewählteFahrzeugklassen.Add(ausgewaehlteKlasse);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"Ungültige Nummer: {nummer}. Diese wird übersprungen.");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Ungültige Eingabe: {neueAusgewaehlteNummern[i]}. Diese wird übersprungen.");
+                                }
+                            }
+                            break;
+                        case 0:
+                            finalValid = true;
+                            return this;
+                        default:
+                            Console.WriteLine("Ungültige eingabe");
+                            break;
+
+                    }
+                }
+            }
+            return this; // hat rumgeweint dass nicht alle pfade einen value zurückgeben - muss nochmal angeschaut werden eventuell ob bug verursacht wurde
         }
+
+
+
 
         // Wählt eine Fahrzeugklasse aus der Vorschlagsliste aus.
         // Hier prüfen wir einfach per Vergleich auf Übereinstimmung der Eigenschaften.
@@ -279,11 +411,11 @@ namespace Streiter_Motorsport_Software
         internal static List<Event> Events { get; private set; } = new();
 
         // Erstellt ein Event und speichert es in der Liste.
-        internal static Event ErzeugeEvent(string name, string game, int dauer, DateTime datum, string strecke)
+        public static void AddEvent(Event newEvent)
+        // wird benötigt um ein event in die liste hinzuzufügen da Events private set ist
         {
-            Event ev = new Event(name, game, dauer, datum, strecke);
-            Events.Add(ev);
-            return ev;
+            Events.Add(newEvent);
+
         }
 
         // Liefert eine Liste von Fahrzeugklassen für die angegebene Simulation.
