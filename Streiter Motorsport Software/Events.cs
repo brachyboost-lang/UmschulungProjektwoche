@@ -57,7 +57,7 @@ namespace Streiter_Motorsport_Software
         {
             if (klasse == null)
             {
-                throw new ArgumentNullException("klasse", "Die Fahrzeugklasse darf nicht null sein.");
+                throw new ArgumentNullException("klasse", "Die Fahrzeugklasse darf nicht null sein."); // erster string ist der name des parameters, zweiter die fehlermeldung
             }
 
             // Prüfen, ob die Klasse in den Vorschlägen enthalten ist
@@ -249,7 +249,7 @@ namespace Streiter_Motorsport_Software
 
         internal int Id { get; private set; }           // Eindeutige einfache ID
         internal string Name { get; set; }              // Anzeigename des Mitglieds
-        internal Vehicles GewaehltesFahrzeug { get; private set; } // Gewähltes Fahrzeug (kann null sein)
+        internal Vehicles? GewaehltesFahrzeug { get; private set; } // Gewähltes Fahrzeug (kann null sein)
         internal static List<EventMember> Mitgliederliste { get; private set; } = eventMembers;
 
         public EventMember(string name)

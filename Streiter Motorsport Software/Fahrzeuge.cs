@@ -98,8 +98,13 @@ namespace Streiter_Motorsport_Software
             
                 // --- LMP2 ---
                 new Vehicles("Dallara P217 LMP2", "LMP2", "iRacing"),
-            
-                
+
+                // --- GTP ---
+                new Vehicles("Porsche 963 GTP", "GTP", "iRacing"),
+                new Vehicles("Nissan GTP ZX-T", "GTP", "iRacing"),
+                new Vehicles("Cadillac V-Series.R GTP", "GTP", "iRacing"),
+                new Vehicles("Acura ARX-06 GTP", "GTP", "iRacing"),
+
 
                 // --- Cup ---
                 new Vehicles("Porsche 911 GT3 Cup", "Cup", "iRacing"),
@@ -144,7 +149,7 @@ namespace Streiter_Motorsport_Software
                 new Vehicles("Vanwall Vandervell 680", "Hypercar", "LMU"),
 
 
-
+                
                 // --- GTE ---
                 new Vehicles("Aston Martin Vantage AMR", "GTE", "LMU"),
                 new Vehicles("Chevrolet Corvette C8.R", "GTE", "LMU"),
@@ -214,12 +219,14 @@ namespace Streiter_Motorsport_Software
                 new Vehicles("BMW M2 CS Racing", "M2", "ACC"),
             
                 // --- ST (Super Trofeo) ---
-                new Vehicles("Lamborghini Huracán Super Trofeo EVO2", "ST/Challenge", "ACC"),
+                new Vehicles("Lamborghini Huracán Super Trofeo 2015", "ST/Challenge", "ACC"),
+                new Vehicles("Lamborghini Huracán Super Trofeo EVO2 2021", "ST/Challenge", "ACC"),
             
                 // --- Ferrari Challenge ---
                 new Vehicles("Ferrari 488 Challenge Evo", "ST/Challenge", "ACC"),
             
                 // --- Porsche Cup ---
+                new Vehicles("Porsche 911 II GT3 Cup 2017", "Cup", "ACC"),
                 new Vehicles("Porsche 911 GT3 Cup (992)", "Cup", "ACC"),
         };
 

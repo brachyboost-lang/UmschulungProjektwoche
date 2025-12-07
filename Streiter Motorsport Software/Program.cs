@@ -176,6 +176,9 @@ namespace Streiter_Motorsport_Software
         public static void ShowVerwaltungsMenu()
         {
             Console.WriteLine("Verwaltungsmenü:");
+
+            // später hinzufügen: automatisches anzeigen von nächsten Events
+
             Console.WriteLine("1. Alle Events anzeigen");
             Console.WriteLine("0. Abmelden");
         }
