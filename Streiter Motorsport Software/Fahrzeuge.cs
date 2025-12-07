@@ -45,7 +45,7 @@ namespace Streiter_Motorsport_Software
         // Zentrale Liste aller Fahrzeugklassen.
         // List<T> ist eine Standard-Sammlung aus dem Framework, die Elemente speichert.
         // Methoden: Add fügt ein Element hinzu, Count liefert die Anzahl, foreach zum Durchlaufen.
-        internal static List<VehicleClasses> fahrzeugklassenliste = new List<VehicleClasses>()
+        internal static List<VehicleClasses> fahrzeugklassenliste = new()
         {
             new VehicleClasses("GT3", "iRacing"),
             new VehicleClasses("LMP2", "iRacing"),
@@ -70,25 +70,20 @@ namespace Streiter_Motorsport_Software
         }
     }
 
-    internal class Vehicles
+    internal class Vehicles : VehicleClasses
     {
-        internal string Simulation { get; set; }      // Zugehörige Simulation
-        internal string Fahrzeugklasse { get; set; }  // Zugehörige Fahrzeugklasse
+        
         internal string Fahrzeugname { get; set; }   // Name des Fahrzeugs
 
         // Zentrale Fahrzeugliste.
-        internal static List<Vehicles> fahrzeugeliste = new List<Vehicles>()
+        internal static List<Vehicles> fahrzeugeliste = new()
         {
-            new Vehicles("iRacing", "GT3", "Audi R8 LMS Evo II GT3"),
-            new Vehicles("LMU", "LMP2", "Oreca 07 Gibson (WEC LMP2)"),
-            new Vehicles("ACC", "GT3", "Aston Martin V12 Vantage GT3"),
+            
         };
 
-        public Vehicles(string simulation, string fahrzeugklasse, string fahrzeugname)
+        public Vehicles(string fahrzeugname, string fahrzeugklasse, string game) : base(fahrzeugklasse, game)
         {
-            Fahrzeugklasse = fahrzeugklasse;
             Fahrzeugname = fahrzeugname;
-            Simulation = simulation;
         }
     }
 }

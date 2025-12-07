@@ -61,6 +61,10 @@ namespace Streiter_Motorsport_Software
 
             return null; //wenn kein User gefunden wurde, gib null zurück
         }
+        public void RemoveUser(User username)
+        {
+            users.Remove(username);
+        }
     }
 
 

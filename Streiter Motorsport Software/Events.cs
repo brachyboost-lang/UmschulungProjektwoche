@@ -108,7 +108,7 @@ namespace Streiter_Motorsport_Software
             // Für jeden Eintrag in der zentralen Fahrzeugliste prüfen wir Simulation + Klasse.
             foreach (Vehicles v in Vehicles.fahrzeugeliste)
             {
-                if (v.Simulation != this.Simulation)
+                if (v.Game != this.Simulation)
                 {
                     // Fahrzeug gehört nicht zur Simulation des Events
                     continue;
