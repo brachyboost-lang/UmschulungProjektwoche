@@ -84,6 +84,19 @@ namespace Streiter_Motorsport_Software
 
             return false;
         }
+
+        // Persistence helpers for JSON layer
+        public List<User> GetAllUsers()
+        {
+            return new List<User>(users);
+        }
+
+        public void ReplaceUsers(List<User> newUsers)
+        {
+            if (newUsers == null) return;
+            users.Clear();
+            users.AddRange(newUsers);
+        }
     }
 
 
@@ -143,7 +156,7 @@ namespace Streiter_Motorsport_Software
             Console.WriteLine("Bitte ein Datum und eine Uhrzeit im Format TT.MM.JJJJ hh: mm eingeben: ");
             while (true)
             {
-                string input = Console.ReadLine() ?? string.Empty; 
+                string input = Console.ReadLine() ?? string.Empty;
                 if (DateTime.TryParse(input, out DateTime result))
                 {
                     return result;
@@ -162,7 +175,7 @@ namespace Streiter_Motorsport_Software
                 if (input.Length == 1)
                 {
                     char result = input[0];
-                    return char.ToLower(result)                ;
+                    return char.ToLower(result);
                 }
                 Console.Write("Ungültige Eingabe. Bitte ein einzelnes Zeichen eingeben: ");
             }

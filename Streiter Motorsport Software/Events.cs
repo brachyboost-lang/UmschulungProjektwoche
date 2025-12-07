@@ -29,16 +29,13 @@ namespace Streiter_Motorsport_Software
 
         public Event(string name, string simulation, int dauer, DateTime datum, string strecke)
         {
-            // ID zuweisen
-            Id = naechsteId;
-            naechsteId = naechsteId++;
-
+            // ID zuweisen (korrekte Inkrementierung)
+            Id = naechsteId++;
             Name = name;
             Simulation = simulation;
             Dauer = dauer;
             Datum = datum;
             Strecke = strecke;
-
 
             VorgeschlageneFahrzeugklassen = new List<VehicleClasses>();
             AusgewählteFahrzeugklassen = new List<VehicleClasses>();
@@ -55,9 +52,34 @@ namespace Streiter_Motorsport_Software
             }
         }
 
+        // Konstruktor für minimale Erstellung (z.B. aus Admin-Menü)
         public Event(string name)
         {
+            Id = naechsteId++;
             Name = name;
+            VorgeschlageneFahrzeugklassen = new List<VehicleClasses>();
+            AusgewählteFahrzeugklassen = new List<VehicleClasses>();
+            AngemeldeteMitglieder = new List<EventMember>();
+        }
+
+        // Spezieller Konstruktor zur Rekonstruktion beim Laden aus Persistenz (setzt Id direkt)
+        internal Event(int id, string name, string? simulation, int? dauer, DateTime datum, string? strecke)
+        {
+            Id = id;
+            // stelle sicher, dass nächstes Id mindestens id+1 ist
+            if (id >= naechsteId) naechsteId = id + 1;
+
+            Name = name;
+            Simulation = simulation;
+            Dauer = dauer;
+            Datum = datum;
+            Strecke = strecke;
+
+            VorgeschlageneFahrzeugklassen = new List<VehicleClasses>();
+            AusgewählteFahrzeugklassen = new List<VehicleClasses>();
+            AngemeldeteMitglieder = new List<EventMember>();
+
+            // Vorschläge werden ggf. später befüllt beim Re-Laden der Referenzen
         }
 
         public Event CreateEvent(string name)
@@ -260,9 +282,6 @@ namespace Streiter_Motorsport_Software
             }
             return this; // hat rumgeweint dass nicht alle pfade einen value zurückgeben - muss nochmal angeschaut werden eventuell ob bug verursacht wurde
         }
-
-
-
 
         // Wählt eine Fahrzeugklasse aus der Vorschlagsliste aus.
         // Hier prüfen wir einfach per Vergleich auf Übereinstimmung der Eigenschaften.
@@ -467,13 +486,19 @@ namespace Streiter_Motorsport_Software
 
         public EventMember(string name)
         {
-            // ID zuweisen und Zähler erhöhen
-            Id = naechsteId;
-            naechsteId = naechsteId++;
-
+            // ID zuweisen und Zähler erhöhen (korrekte Inkrementierung)
+            Id = naechsteId++;
             Name = name;
             Mitgliederliste.Add(this); // fügt dieses mitglied direkt auf die mitgliederliste hinzu
+        }
 
+        // Spezieller Konstruktor zur Rekonstruktion beim Laden aus Persistenz (setzt Id direkt)
+        internal EventMember(int id, string name)
+        {
+            Id = id;
+            if (id >= naechsteId) naechsteId = id + 1;
+            Name = name;
+            Mitgliederliste.Add(this);
         }
 
         // Setzt das gewählte Fahrzeug für dieses Mitglied.
@@ -485,5 +510,3 @@ namespace Streiter_Motorsport_Software
     }
 
 }
-
-
