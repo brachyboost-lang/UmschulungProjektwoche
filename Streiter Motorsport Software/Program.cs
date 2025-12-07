@@ -98,6 +98,7 @@ namespace Streiter_Motorsport_Software
             EventMember tKeirsbulck = new("timo keirsbulck");
 
 
+
             Console.WriteLine("Willkommen in der Streiter Motorsport Endurance Software!");
             Console.WriteLine("Sie können jederzeit mit 0 oder \"exit\" zum vorherigen Menü zurückkehren.");
             MainLoop();
@@ -216,63 +217,70 @@ namespace Streiter_Motorsport_Software
                     }
                     if (choice == 1)
                     {
-                        Console.WriteLine("Rolle zuweisen: ");
-                        Console.WriteLine("1. Administrator");
-                        Console.WriteLine("2. Teamverwaltung");
-                        Console.WriteLine("3. Mitgliedskonto (WiP)");
-                        int choice1 = GetUserInput.GetUserInputInt();
+                        while (true)
+                        {
+                            Console.WriteLine("Rolle zuweisen: ");
+                            Console.WriteLine("1. Administrator");
+                            Console.WriteLine("2. Teamverwaltung");
+                            Console.WriteLine("3. Mitgliedskonto (WiP)");
+                            int choice1 = GetUserInput.GetUserInputInt();
 
-                        if (choice1 == 1)
-                        {
-                            Console.WriteLine("Neuen Administrator Benutzernamen eingeben: ");
-                            string newAdminUsername = GetUserInput.GetUserInputStr();
-                            Console.WriteLine("Neues Administrator Passwort eingeben: ");
-                            string newAdminPassword = GetUserInput.GetPasswordInput();
-                            User newAdminUser = new User(newAdminUsername, newAdminPassword, 0);
-                            userManager.AddUser(newAdminUser);
-                            Console.WriteLine($"Administrator Benutzer '{newAdminUsername}' wurde erfolgreich erstellt.");
+                            if (choice1 == 1)
+                            {
+                                Console.WriteLine("Neuen Administrator Benutzernamen eingeben: ");
+                                string newAdminUsername = GetUserInput.GetUserInputStr();
+                                Console.WriteLine("Neues Administrator Passwort eingeben: ");
+                                string newAdminPassword = GetUserInput.GetPasswordInput();
+                                User newAdminUser = new User(newAdminUsername, newAdminPassword, 0);
+                                userManager.AddUser(newAdminUser);
+                                Console.WriteLine($"Administrator Benutzer '{newAdminUsername}' wurde erfolgreich erstellt.");
+                            }
+                            else if (choice1 == 2)
+                            {
+                                Console.WriteLine("Neuen Teamverwaltungs Benutzernamen eingeben: ");
+                                string newTeamManagerUsername = GetUserInput.GetUserInputStr();
+                                Console.WriteLine("Neues Teamverwaltungs Passwort eingeben: ");
+                                string newTeamManagerPassword = GetUserInput.GetPasswordInput();
+                                User newTeamManagerUser = new User(newTeamManagerUsername, newTeamManagerPassword, 1);
+                                userManager.AddUser(newTeamManagerUser);
+                                Console.WriteLine($"Teamverwaltungs Benutzer '{newTeamManagerUsername}' wurde erfolgreich erstellt.");
+                            }
+                            else if (choice1 == 3)
+                            {
+                                Console.WriteLine("Mitgliedskonto Funktion ist noch in Arbeit.");
+                            }
+                            else if (choice1 == 0)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ungültige Auswahl.");
+                           
+                            }
                         }
-                        else if (choice1 == 2)
+                            break;
+                    }
+
+                    else if (choice == 2)
+                    {
+                        while (true)
                         {
-                            Console.WriteLine("Neuen Teamverwaltungs Benutzernamen eingeben: ");
-                            string newTeamManagerUsername = GetUserInput.GetUserInputStr();
-                            Console.WriteLine("Neues Teamverwaltungs Passwort eingeben: ");
-                            string newTeamManagerPassword = GetUserInput.GetPasswordInput();
-                            User newTeamManagerUser = new User(newTeamManagerUsername, newTeamManagerPassword, 1);
-                            userManager.AddUser(newTeamManagerUser);
-                            Console.WriteLine($"Teamverwaltungs Benutzer '{newTeamManagerUsername}' wurde erfolgreich erstellt.");
-                        }
-                        else if (choice1 == 3)
-                        {
-                            Console.WriteLine("Mitgliedskonto Funktion ist noch in Arbeit.");
-                        }
-                        else if (choice1 == 0)
-                        {
+                            Console.WriteLine("Zu entfernenden Benutzernamen eingeben: ");
+                            string removeUsername = GetUserInput.GetUserInputStr();
+                            bool removed = userManager.RemoveUser(removeUsername);
+                            if (removed)
+                            {
+                                Console.WriteLine($"Benutzer '{removeUsername}' wurde erfolgreich entfernt.");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Benutzer '{removeUsername}' wurde nicht gefunden.");
+                            }
                             break;
                         }
-                        else
-                        {
-                            Console.WriteLine("Ungültige Auswahl.");
-                        }
-
-                        break;
                     }
-                                        else if (choice == 2)
-                    {
-                        Console.WriteLine("Zu entfernenden Benutzernamen eingeben: ");
-                        string removeUsername = GetUserInput.GetUserInputStr();
-
-                        bool removed = userManager.RemoveUser(removeUsername);
-                        if (removed)
-                        {
-                            Console.WriteLine($"Benutzer '{removeUsername}' wurde erfolgreich entfernt.");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Benutzer '{removeUsername}' wurde nicht gefunden.");
-                        }
-                        break;
-                    }
+                    break;
                 case 2:
                     // Teammitgliedverwaltungsfunktionen hier implementieren
                     break;

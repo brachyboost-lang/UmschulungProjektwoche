@@ -1,29 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-//iRacing Fahrzeugkategorien: GT3 
-
-//iRacing GT3 Fahrzeuge: Audi R8 LMS Evo II GT3, BMW M4 GT3, Chevrolet Corvette Z06 GT3.R, Ferrari 296 GT3, Ford Mustang GT3, Lamborghini Huracán GT3 EVO, McLaren 720S GT3 EVO, Mercedes-AMG GT3 2020, Porsche 911 GT3 R (992), Acura NSX GT3 EVO 22 
-
-
-
-//LMU Fahrzeugkategorien: Hypercar, LMP2, GT3, GTE 
-
-//LMU GT3 Fahrzeuge: Aston Martin Vantage AMR LMGT3 Evo, BMW M4 LMGT3, BMW M4 LMGT3 Evo, Chevrolet Corvette Z06 LMGT3.R, Ferrari 296 LMGT3, Ford Mustang LMGT3, Lamborghini Huracán LMGT3 Evo2, Lexus RC F LMGT3, McLaren 720S LMGT3 Evo, Porsche 911 LMGT3 R (992) 
-
-//LMU LMP2 Fahrzeuge: Oreca 07 Gibson (WEC LMP2), Oreca 07 Gibson (ELMS LMP2) 
-
-//LMU Hypercar Fahrzeuge: Alpine A424, Aston Martin Valkyrie AMR LMH, BMW M Hybrid V8, Cadillac V-Series.R, Ferrari 499P, Glickenhaus SCG 007 LMH, Isotta Fraschini Tipo 6-C, Lamborghini SC63, Peugeot 9X8 (2023), Peugeot 9X8 2024, Porsche 963, Toyota GR010-Hybrid, Vanwall Vandervell 680 
-
-//LMU GTE Fahrzeuge: Aston Martin Vantage GTE, Chevrolet Corvette C8.R, Ferrari 488 GTE Evo, Porsche 911 RSR-19 
-
-
-
-//ACC Fahrzeugkategorien: GT3, GT4, M2 
-
-//ACC GT3 Fahrzeuge: Aston Martin V12 Vantage GT3, Aston Martin V8 Vantage GT3, Audi R8 LMS GT3, Audi R8 LMS Evo GT3, Audi R8 LMS Evo II GT3, Bentley Continental GT3 (diverse Varianten), BMW M6 GT3, BMW M4 GT3, Emil Frey Jaguar GT3, Ferrari 488 GT3, Ferrari 488 EVO GT3, Ferrari 296 GT3, Honda NSX GT3, Honda NSX GT3 Evo, Lamborghini Huracán GT3, Lamborghini Huracán Evo GT3, Lamborghini Huracán Evo2 GT3, Lexus RC F GT3, McLaren 650S GT3, McLaren 720S GT3, McLaren 720S GT3 Evo, Mercedes-AMG GT3, Mercedes-AMG GT3 Evo, Nissan GT-R Nismo GT3 (diverse Baujahre), Porsche 911 GT3 R (2018 / 2019), Porsche 911 GT3 R (992), Reiter Engineering R-EX GT3 
-
-
 
 namespace Streiter_Motorsport_Software
 {
@@ -52,6 +29,7 @@ namespace Streiter_Motorsport_Software
             new VehicleClasses("GTP", "iRacing"),
             new VehicleClasses("LMP1", "iRacing"),
             new VehicleClasses("GT4", "iRacing"),
+            new VehicleClasses("Cup", "iRacing"),
             new VehicleClasses("LMP2", "LMU"),
             new VehicleClasses("Hypercar", "LMU"),
             new VehicleClasses("GTE", "LMU"),
@@ -60,7 +38,9 @@ namespace Streiter_Motorsport_Software
             new VehicleClasses("GT3", "ACC"),
             new VehicleClasses("GT4", "ACC"),
             new VehicleClasses("M2", "ACC"),
-            new VehicleClasses("ST", "ACC")
+            new VehicleClasses("ST/Challenge", "ACC"),
+            new VehicleClasses("Cup", "ACC"),
+            new VehicleClasses("GT2", "ACC"),
         };
 
         public VehicleClasses(string fahrzeugklasse, string game) : base(game)
@@ -72,13 +52,175 @@ namespace Streiter_Motorsport_Software
 
     internal class Vehicles : VehicleClasses
     {
-        
+
         internal string Fahrzeugname { get; set; }   // Name des Fahrzeugs
 
         // Zentrale Fahrzeugliste.
         internal static List<Vehicles> fahrzeugeliste = new()
         {
+                // ===========================
+                //        iRACING
+                // ===========================
             
+                // --- GT3 ---
+                new Vehicles("Acura NSX GT3 Evo 22", "GT3", "iRacing"),
+                new Vehicles("Audi R8 LMS GT3", "GT3", "iRacing"),
+                new Vehicles("Audi R8 LMS Evo II GT3", "GT3", "iRacing"),
+                new Vehicles("BMW M4 GT3 Evo", "GT3", "iRacing"),
+                new Vehicles("BMW Z4 GT3", "GT3", "iRacing"),
+                new Vehicles("Mercedes AMG GT3", "GT3", "iRacing"),
+                new Vehicles("Mercedes AMG GT3 2020", "GT3", "iRacing"),
+                new Vehicles("Ferrari 296 GT3", "GT3", "iRacing"),
+                new Vehicles("Ferrari 488 GT3", "GT3", "iRacing"),
+                new Vehicles("Ferrari 488 GT3 Evo 2020", "GT3", "iRacing"),
+                new Vehicles("Lamborghini Huracán GT3 EVO", "GT3", "iRacing"),
+                new Vehicles("Chevrolet Corvette Z06 GT3.R", "GT3", "iRacing"),
+                new Vehicles("McLaren 720S GT3", "GT3", "iRacing"),
+                new Vehicles("McLaren MP4-12C GT3", "GT3", "iRacing"),
+                new Vehicles("Ford Mustang GT3", "GT3", "iRacing"),
+                new Vehicles("Porsche 911 GT3 R", "GT3", "iRacing"),
+                new Vehicles("Porsche 911 GT3 R (992)", "GT3", "iRacing"),
+                new Vehicles("Aston Martin Vantage GT3", "GT3", "iRacing"),
+
+            
+                // --- GT4 ---
+                new Vehicles("Aston Martin Vantage GT4", "GT4", "iRacing"),
+                new Vehicles("BMW M4 F82 GT4", "GT4", "iRacing"),
+                new Vehicles("BMW M4 G82 GT4", "GT4", "iRacing"),
+                new Vehicles("Porsche 718 Cayman GT4 Clubsport", "GT4", "iRacing"),
+                new Vehicles("McLaren 570S GT4", "GT4", "iRacing"),
+                new Vehicles("Mercedes-AMG GT4", "GT4", "iRacing"),
+                new Vehicles("Ford Mustang GT4", "GT4", "iRacing"),
+                
+                // --- LMP1 ---
+                new Vehicles("Porsche 919 LMP1", "LMP1", "iRacing"),
+                new Vehicles("Audi R18 LMP1", "LMP!", "iRacing"),
+            
+                // --- LMP2 ---
+                new Vehicles("Dallara P217 LMP2", "LMP2", "iRacing"),
+            
+                
+
+                // --- Cup ---
+                new Vehicles("Porsche 911 GT3 Cup", "Cup", "iRacing"),
+                new Vehicles("Porsche 911 GT3 Cup (992", "Cup", "iRacing"),
+            
+            
+                // ===========================
+                //          LMU
+                // ===========================
+            
+                // --- LMGT3 (GT3) ---
+                new Vehicles("Ford Mustang LMGT3", "GT3", "LMU"),
+                new Vehicles("McLaren 720S LMGT3 Evo", "GT3", "LMU"),
+                new Vehicles("Mercedes AMG LMGT3 Evo", "GT3", "LMU"),
+                new Vehicles("BMW M4 LMGT3", "GT3", "LMU"),
+                new Vehicles("Aston Martin Vantage LMGT3", "GT3", "LMU"),
+                new Vehicles("Chevrolet Corvette Z06 GT3.R", "GT3", "LMU"),
+                new Vehicles("Ferrari 296 LMGT3", "GT3", "LMU"),
+                new Vehicles("Lexus RC F LMGT3", "GT3", "LMU"),
+                new Vehicles("Porsche 911 GT3 R LMGT3", "GT3", "LMU"),
+                new Vehicles("Lamborghini Huracán LMGT3 Evo2", "GT3", "LMU"),
+            
+                // --- LMP2 ---
+                new Vehicles("Oreca 07 Gibson", "LMP2", "LMU"),
+            
+                // --- LMP3 ---
+                new Vehicles("Ligier JS P325", "LMP3", "LMU"),
+
+                // --- Hypercar ---
+                new Vehicles("Alpine A424", "Hypercar", "LMU"),
+                new Vehicles("Aston Martin Valkyrie AMR-LMH", "Hypercar", "LMU"),
+                new Vehicles("BMW M Hybrid V8", "Hypercar", "LMU"),
+                new Vehicles("Cadillac V-Series.R", "Hypercar", "LMU"),
+                new Vehicles("Ferrari 499P", "Hypercar", "LMU"),
+                new Vehicles("Glickenhaus SCG 007", "Hypercar", "LMU"),
+                new Vehicles("Isotta Fraschini Tipo 6", "Hypercar", "LMU"),
+                new Vehicles("Lamborghini SC63", "Hypercar", "LMU"),
+                new Vehicles("Peugeot 9X8", "Hypercar", "LMU"),
+                new Vehicles("Peugeot 9X8 2024", "Hypercar", "LMU"),
+                new Vehicles("Porsche 963", "Hypercar", "LMU"),
+                new Vehicles("Toyota GR010-Hybrid", "Hypercar", "LMU"),
+                new Vehicles("Vanwall Vandervell 680", "Hypercar", "LMU"),
+
+
+
+                // --- GTE ---
+                new Vehicles("Aston Martin Vantage AMR", "GTE", "LMU"),
+                new Vehicles("Chevrolet Corvette C8.R", "GTE", "LMU"),
+                new Vehicles("Ferrari 488 GTE Evo", "GTE", "LMU"),
+                new Vehicles("Porsche 911 RSR-19", "GTE", "LMU"),
+            
+            
+                // ===========================
+                //           ACC
+                // ===========================
+            
+                // --- GT3 ---
+                new Vehicles("Aston Martin V8 Vantage GT3 2019", "GT3", "ACC"),
+                new Vehicles("Aston Martin V12 Vantage GT3 2013", "GT3", "ACC"),
+                new Vehicles("Audi R8 LMS GT3 2015", "GT3", "ACC"),
+                new Vehicles("Audi R8 LMS Evo GT3 2019", "GT3", "ACC"),
+                new Vehicles("Audi R8 LMS Evo II GT3 2022", "GT3", "ACC"),
+                new Vehicles("Bentley Continental GT3 2015", "GT3", "ACC"),
+                new Vehicles("Bentley Continental GT3 2018", "GT3", "ACC"),
+                new Vehicles("BMW M4 GT3", "GT3", "ACC"),
+                new Vehicles("BMW M6 GT3", "GT3", "ACC"),
+                new Vehicles("Emil Frey Jaguar GT3", "GT3", "ACC"),
+                new Vehicles("Ferrari 488 GT3 2018", "GT3", "ACC"),
+                new Vehicles("Ferrari 488 GT3 Evo 2020", "GT3", "ACC"),
+                new Vehicles("Ferrari 296 GT3 2023", "GT3", "ACC"),
+                new Vehicles("Honda NSX GT3 2017", "GT3", "ACC"),
+                new Vehicles("Honda NSX GT3 Evo 2019", "GT3", "ACC"),
+                new Vehicles("Lamborghini Huracán GT3 2015", "GT3", "ACC"),
+                new Vehicles("Lamborghini Huracán GT3 Evo 2019", "GT3", "ACC"),
+                new Vehicles("Lamborghini Huracán GT3 Evo II 2023", "GT3", "ACC"),
+                new Vehicles("Lexus RC F GT3", "GT3", "ACC"),
+                new Vehicles("McLaren 650S GT3 2015", "GT3", "ACC"),
+                new Vehicles("McLaren 720S GT3 2019", "GT3", "ACC"),
+                new Vehicles("McLaren 720S GT3 Evo 2023", "GT3", "ACC"),
+                new Vehicles("Mercedes AMG GT3 2015", "GT3", "ACC"),
+                new Vehicles("Mercedes AMG GT3 Evo 2020", "GT3", "ACC"),
+                new Vehicles("Nissan GT-R Nismo GT3 2015", "GT3", "ACC"),
+                new Vehicles("Nissan GT-R Nismo GT3 2018", "GT3", "ACC"),
+                new Vehicles("Porsche 911 GT3 R 2018", "GT3", "ACC"),
+                new Vehicles("Porsche 911 II GT3 R 2019", "GT3", "ACC"),
+                new Vehicles("Porsche 992 GT3 R 2023", "GT3", "ACC"),
+                new Vehicles("Reiter EngineeringR-EX GT3", "GT3", "ACC"),
+            
+                // --- GT4 ---
+                new Vehicles("Alpine A110 GT4", "GT4", "ACC"),
+                new Vehicles("Aston Martin Vantage GT4", "GT4", "ACC"),
+                new Vehicles("Audi R8 LMS GT4", "GT4", "ACC"),
+                new Vehicles("BMW M4 GT4", "GT4", "ACC"),
+                new Vehicles("Chevrolet Camaro GT4.R", "GT4", "ACC"),
+                new Vehicles("Ginetta G55 GT4", "GT4", "ACC"),
+                new Vehicles("KTM X-Bow GT4", "GT4", "ACC"),
+                new Vehicles("Maserati GranTurismo MC GT4", "GT4", "ACC"),
+                new Vehicles("McLaren 570S GT4", "GT4", "ACC"),
+                new Vehicles("Mercedes AMG GT4", "GT4", "ACC"),
+                new Vehicles("Porsche 718 Cayman GT4 Clubsport", "GT4", "ACC"),
+
+                // --- GT2 ---
+                new Vehicles("Audi R8 LMS GT2", "GT2", "ACC"),
+                new Vehicles("KTM X-Bow GT2", "GT2", "ACC"),
+                new Vehicles("Maserati MC20 GT2", "GT2", "ACC"),
+                new Vehicles("Mercedes AMG GT2", "GT2", "ACC"),
+                new Vehicles("Porsche 991 II GT2 RS CS Evo", "GT2", "ACC"),
+                new Vehicles("Porsche 935 GT2", "GT2", "ACC"),
+                
+
+                // --- BMW M2 ---
+                new Vehicles("BMW M2 CS Racing", "M2", "ACC"),
+            
+                // --- ST (Super Trofeo) ---
+                new Vehicles("Lamborghini Huracán Super Trofeo EVO2", "ST/Challenge", "ACC"),
+            
+                // --- Ferrari Challenge ---
+                new Vehicles("Ferrari 488 Challenge Evo", "ST/Challenge", "ACC"),
+            
+                // --- Porsche Cup ---
+                new Vehicles("Porsche 911 GT3 Cup (992)", "Cup", "ACC"),
         };
 
         public Vehicles(string fahrzeugname, string fahrzeugklasse, string game) : base(fahrzeugklasse, game)
@@ -87,5 +229,5 @@ namespace Streiter_Motorsport_Software
         }
     }
 }
-    
+
 

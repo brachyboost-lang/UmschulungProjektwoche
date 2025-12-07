@@ -61,9 +61,27 @@ namespace Streiter_Motorsport_Software
 
             return null; //wenn kein User gefunden wurde, gib null zurück
         }
-        public void RemoveUser(User username)
+
+        // Entfernt einen Benutzer anhand des Benutzernamens.
+        // Gibt true zurück, wenn ein Benutzer entfernt wurde, sonst false.
+        public bool RemoveUser(string username)
         {
-            users.Remove(username);
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return false;
+            }
+
+            // geht Liste users durch und sucht nach dem Benutzernamen
+            for (int i = 0; i < users.Count; i++)
+            {
+                if (string.Equals(users[i].Username, username))
+                {
+                    users.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 

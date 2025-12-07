@@ -170,7 +170,7 @@ namespace Streiter_Motorsport_Software
             }
 
             // Fahrzeug muss zur Simulation passen
-            if (fahrzeug.Simulation != this.Simulation)
+            if (fahrzeug.Game != this.Simulation)
             {
                 throw new InvalidOperationException("Das Fahrzeug gehört nicht zur Simulation des Events.");
             }
@@ -231,7 +231,7 @@ namespace Streiter_Motorsport_Software
             List<Vehicles> ergebnis = new List<Vehicles>();
             foreach (Vehicles v in Vehicles.fahrzeugeliste)
             {
-                if (v.Simulation == simulation && v.Fahrzeugklasse == fahrzeugklasse)
+                if (v.Game == simulation && v.Fahrzeugklasse == fahrzeugklasse)
                 {
                     ergebnis.Add(v);
                 }
@@ -245,11 +245,12 @@ namespace Streiter_Motorsport_Software
     {
         // Statischer Zähler zur Vergabe einfacher, inkrementeller IDs.
         private static int naechsteId = 1;
+        private static readonly List<EventMember> eventMembers = new();
 
         internal int Id { get; private set; }           // Eindeutige einfache ID
         internal string Name { get; set; }              // Anzeigename des Mitglieds
         internal Vehicles GewaehltesFahrzeug { get; private set; } // Gewähltes Fahrzeug (kann null sein)
-        internal static List<EventMember> Mitgliederliste { get; private set; } = new();
+        internal static List<EventMember> Mitgliederliste { get; private set; } = eventMembers;
 
         public EventMember(string name)
         {
