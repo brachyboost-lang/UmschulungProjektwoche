@@ -143,7 +143,7 @@ namespace Streiter_Motorsport_Software
             Console.WriteLine("Bitte ein Datum und eine Uhrzeit im Format TT.MM.JJJJ hh: mm eingeben: ");
             while (true)
             {
-                string input = Console.ReadLine() ?? string.Empty;
+                string input = Console.ReadLine() ?? string.Empty; 
                 if (DateTime.TryParse(input, out DateTime result))
                 {
                     return result;
@@ -156,12 +156,13 @@ namespace Streiter_Motorsport_Software
         {
             while (true)
             {
-                string input = Console.ReadLine().ToLower() ?? string.Empty; // string statt ConsoleKeyInfo umwandeln
+                string input = Console.ReadLine() ?? string.Empty; // string statt ConsoleKeyInfo umwandeln
                                                                    // (dann kann user nachdenken vor dem abschicken,
                                                                    // ansonsten geht es weiter sobald ein key gedrückt wurde
                 if (input.Length == 1)
                 {
-                    return input[0];
+                    char result = input[0];
+                    return char.ToLower(result)                ;
                 }
                 Console.Write("Ungültige Eingabe. Bitte ein einzelnes Zeichen eingeben: ");
             }

@@ -128,7 +128,7 @@ namespace Streiter_Motorsport_Software
                 Console.WriteLine("----------");
                 Console.WriteLine("Ist die Auswahl so korrekt? Y/N");
                 char bestaetigung = GetUserInput.GetUserInputChar();
-                if (bestaetigung == 'Y' || bestaetigung == 'y')
+                if (bestaetigung == 'y')
                 {
                     Console.WriteLine("Event wurde erfolgreich erstellt.");
                     return this;
