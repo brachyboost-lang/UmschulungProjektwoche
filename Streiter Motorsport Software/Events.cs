@@ -11,12 +11,12 @@ namespace Streiter_Motorsport_Software
     {
         private static int naechsteId = 1; // Zähler für Event-IDs
 
-        internal int Id { get; private set; }                // Einfache int-ID
+        internal int? Id { get; private set; }                // Einfache int-ID
         internal string Name { get; set; }                   // Name des Events
-        internal string Simulation { get; set; }             // Zugehörige Simulation
-        internal int Dauer { get; set; }                     // Dauer in Minuten
+        internal string? Simulation { get; set; }             // Zugehörige Simulation
+        internal int? Dauer { get; set; }                     // Dauer in Minuten
         internal DateTime Datum { get; set; }                  // Datum des Events
-        internal string Strecke { get; set; }                 // Strecke des Events
+        internal string? Strecke { get; set; }                 // Strecke des Events
 
         // Vorschläge: Fahrzeugklassen, die zur Simulation passen.
         internal List<VehicleClasses> VorgeschlageneFahrzeugklassen { get; private set; }
@@ -55,8 +55,14 @@ namespace Streiter_Motorsport_Software
             }
         }
 
-        public Event CreateEvent()
+        public Event(string name)
         {
+            Name = name;
+        }
+
+        public Event CreateEvent(string name)
+        {
+            Name = name;
             while (true)
             {
                 Console.WriteLine("Simulation auswählen: ");

@@ -288,12 +288,17 @@ namespace Streiter_Motorsport_Software
                     // Teammitgliedverwaltungsfunktionen hier implementieren
                     break;
                 case 3:
-                    Console.WriteLine("Simulation auswählen:");
-                    Console.WriteLine("1. Assetto Corsa Competizione");
-                    Console.WriteLine("2. iRacing");
-                    Console.WriteLine("3. Le Mans Ultimate");
-
-                    // Eventverwaltungsfunktionen hier implementieren
+                    Console.WriteLine("Event Verwaltung\n1. Event erstellen\n2. Event löschen\n0. Zurück");
+                    int eventchoice = GetUserInput.GetUserInputInt();
+                    if (eventchoice == 1)
+                    {
+                        Console.WriteLine("Name des Events eingeben: ");
+                        string eventName = GetUserInput.GetUserInputStr();
+                        Event newEvent = new Event(eventName);
+                        newEvent.CreateEvent(eventName);
+                        EventManager.AddEvent(newEvent);
+                    }
+                    
                     break;
                 case 0:
                     MainLoop();
