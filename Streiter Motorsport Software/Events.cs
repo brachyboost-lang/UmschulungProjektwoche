@@ -15,6 +15,8 @@ namespace Streiter_Motorsport_Software
         internal string Name { get; set; }                   // Name des Events
         internal string Simulation { get; set; }             // Zugehörige Simulation
         internal int Dauer { get; set; }                     // Dauer in Minuten
+        internal DateTime Datum { get; set; }                  // Datum des Events
+        internal string Strecke { get; set; }                 // Strecke des Events
 
         // Vorschläge: Fahrzeugklassen, die zur Simulation passen.
         internal List<VehicleClasses> VorgeschlageneFahrzeugklassen { get; private set; }
@@ -25,15 +27,17 @@ namespace Streiter_Motorsport_Software
         // Angemeldete Mitglieder für das Event.
         internal List<EventMember> AngemeldeteMitglieder { get; private set; }
 
-        public Event(string name, string simulation, int dauer)
+        public Event(string name, string simulation, int dauer, DateTime datum, string strecke)
         {
             // ID zuweisen
             Id = naechsteId;
-            naechsteId = naechsteId ++;
+            naechsteId = naechsteId++;
 
             Name = name;
             Simulation = simulation;
             Dauer = dauer;
+            Datum = datum;
+            Strecke = strecke;
 
 
             VorgeschlageneFahrzeugklassen = new List<VehicleClasses>();
@@ -51,9 +55,80 @@ namespace Streiter_Motorsport_Software
             }
         }
 
+        public Event CreateEvent()
+        {
+            while (true)
+            {
+                Console.WriteLine("Simulation auswählen: ");
+                Console.WriteLine("1. iRacing");
+                Console.WriteLine("2. Assetto Corsa Competizione");
+                Console.WriteLine("3. Le Mans Ultimate");
+                int simulation = GetUserInput.GetUserInputInt();
+                switch (simulation)
+                {
+                    case 1:
+                        this.Simulation = "iRacing";
+                        break;
+                    case 2:
+                        this.Simulation = "Assetto Corsa Competizione";
+                        break;
+                    case 3:
+                        this.Simulation = "Le Mans Ultimate";
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException("Ungültige Auswahl für die Simulation.");
+
+                }
+                break;
+            }
+            Console.WriteLine("Strecke eingeben: ");
+            this.Strecke = GetUserInput.GetUserInputStr();
+            Console.WriteLine("Dauer des Events in Minuten eingeben: ");
+            this.Dauer = GetUserInput.GetUserInputInt();
+            Console.WriteLine("Datum des Events eingeben: ");
+            this.Datum = GetUserInput.GetUserInputDateTime();
+            Console.WriteLine("Fahrzeugklassen auswählen: ");
+            this.VorgeschlageneFahrzeugklassen = EventManager.SchlageFahrzeugklassenVor(this.Simulation);
+               for (int i = 0; i < this.VorgeschlageneFahrzeugklassen.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {this.VorgeschlageneFahrzeugklassen[i].Fahrzeugklasse}");
+            }
+               Console.WriteLine("Geben Sie die Nummern der gewünschten Fahrzeugklassen ein, getrennt durch Kommas: (z.B. 1, 5, 6");
+            int eingabe = GetUserInput.GetUserInputInt();
+            string[] ausgewaehlteNummern = eingabe.ToString().Split(','); // trennt die eingabe in einzelne nummern auf
+            for (int i = 0; i < ausgewaehlteNummern.Length; i++)
+            {
+                if (int.TryParse(ausgewaehlteNummern[i].Trim(), out int nummer))
+                {
+                    if (nummer >= 1 && nummer <= this.VorgeschlageneFahrzeugklassen.Count)
+                    {
+                        VehicleClasses ausgewaehlteKlasse = this.VorgeschlageneFahrzeugklassen[nummer - 1];
+                        this.AusgewählteFahrzeugklassen.Add(ausgewaehlteKlasse);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Ungültige Nummer: {nummer}. Diese wird übersprungen.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Ungültige Eingabe: {ausgewaehlteNummern[i]}. Diese wird übersprungen.");
+                }
+            }
+            Console.WriteLine("Event erstellt. Folgende Auswahl wurde getroffen: ");
+            Console.WriteLine($"Simulation: {this.Simulation}, Dauer: {this.Dauer} Minuten, Strecke: {this.Strecke}, Datum: {this.Datum.ToShortDateString()}");
+            Console.WriteLine($"Fahrzeugklassen: ");
+            foreach (var klasse in this.AusgewählteFahrzeugklassen)
+            {
+                Console.WriteLine($"- {klasse.Fahrzeugklasse}");
+            }
+
+            return this;
+        }
+
         // Wählt eine Fahrzeugklasse aus der Vorschlagsliste aus.
         // Hier prüfen wir einfach per Vergleich auf Übereinstimmung der Eigenschaften.
-        internal void WähleFahrzeugklasse(VehicleClasses klasse)
+        internal void ChooseClass(VehicleClasses klasse)
         {
             if (klasse == null)
             {
@@ -95,7 +170,7 @@ namespace Streiter_Motorsport_Software
 
         // Liefert alle Fahrzeuge, die zur Event-Simulation passen und zu den ausgewählten Klassen gehören.
         // Rückgabe als List<Vehicles>. <- Brainfuck
-        internal List<Vehicles> VerfügbareFahrzeugeFürAusgewählteKlassen()
+        internal List<Vehicles> ShowCars()
         {
             List<Vehicles> ergebnis = new();
 
@@ -135,7 +210,7 @@ namespace Streiter_Motorsport_Software
         }
 
         // Fügt ein Mitglied hinzu und gibt das Objekt zurück.
-        internal EventMember FuegeMitgliedHinzu(string name)
+        internal EventMember AddMember(string name)
         {
             EventMember m = new(name); // macht das gleiche wie m = new EventMember(name);- auch mit parameterübergabe abkürzbar
             AngemeldeteMitglieder.Add(m);
@@ -143,7 +218,7 @@ namespace Streiter_Motorsport_Software
         }
 
         // Weist einem Mitglied ein Fahrzeug zu.
-        internal void WeiseFahrzeugZu(EventMember mitglied, Vehicles fahrzeug)
+        internal void ChooseCar(EventMember mitglied, Vehicles fahrzeug)
         {
             if (mitglied == null)
             {
@@ -194,7 +269,7 @@ namespace Streiter_Motorsport_Software
             }
 
             // Zuweisung
-            mitglied.WähleFahrzeug(fahrzeug);
+            mitglied.CarChoice(fahrzeug);
         }
     }
 
@@ -204,9 +279,9 @@ namespace Streiter_Motorsport_Software
         internal static List<Event> Events { get; private set; } = new();
 
         // Erstellt ein Event und speichert es in der Liste.
-        internal static Event ErzeugeEvent(string name, string game, int dauer)
+        internal static Event ErzeugeEvent(string name, string game, int dauer, DateTime datum, string strecke)
         {
-            Event ev = new Event(name, game, dauer);
+            Event ev = new Event(name, game, dauer, datum, strecke);
             Events.Add(ev);
             return ev;
         }
@@ -256,7 +331,7 @@ namespace Streiter_Motorsport_Software
         {
             // ID zuweisen und Zähler erhöhen
             Id = naechsteId;
-            naechsteId = naechsteId ++;
+            naechsteId = naechsteId++;
 
             Name = name;
             Mitgliederliste.Add(this); // fügt dieses mitglied direkt auf die mitgliederliste hinzu
@@ -265,7 +340,7 @@ namespace Streiter_Motorsport_Software
 
         // Setzt das gewählte Fahrzeug für dieses Mitglied.
         // Validierungen (ob das Fahrzeug erlaubt ist) erfolgen in der Event-Logik.
-        internal void WähleFahrzeug(Vehicles fahrzeug)
+        internal void CarChoice(Vehicles fahrzeug)
         {
             GewaehltesFahrzeug = fahrzeug;
         }
