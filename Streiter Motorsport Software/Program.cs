@@ -223,7 +223,31 @@ namespace Streiter_Motorsport_Software
                         }
                         break;
                     case 2:
-                        // Teammitgliedverwaltungsfunktionen hier implementieren
+                        while (true)
+                        {
+                            Console.WriteLine("Teammitglieder verwalten\n----------------");
+                            Console.WriteLine("1. Mitglied hinzufügen");
+                            Console.WriteLine("2. Mitglied entfernen");
+                            Console.WriteLine("0. Zurück");
+                            int wahl = GetUserInput.GetUserInputInt();
+                            if (wahl == 0)
+                            {
+                                break;
+                            }
+                            if (wahl == 1)
+                            {
+                                Console.WriteLine("Neues Mitglied erstellen\n--------------");
+                                Console.WriteLine("Vornamen und Nachnamen eingeben: (z.B. \"Max Mustermann\"");
+                                string newMember = GetUserInput.GetUserInputStr();
+                                EventMember newMember1 = new EventMember(newMember);
+
+                            }
+                            if (wahl == 2)
+                            {
+
+                            }
+                            break;
+                        }
                         break;
                     case 3:
                         Console.WriteLine("Event Verwaltung\n1. Event erstellen\n2. Event löschen\n0. Zurück");

@@ -24,6 +24,7 @@ namespace Streiter_Motorsport_Software
         // Methoden: Add fügt ein Element hinzu, Count liefert die Anzahl, foreach zum Durchlaufen.
         internal static List<VehicleClasses> fahrzeugklassenliste = new()
         {
+            new VehicleClasses("TCR", "iRacing"),
             new VehicleClasses("GT3", "iRacing"),
             new VehicleClasses("LMP2", "iRacing"),
             new VehicleClasses("GTP", "iRacing"),
@@ -61,6 +62,12 @@ namespace Streiter_Motorsport_Software
                 // ===========================
                 //        iRACING
                 // ===========================
+
+                // --- NEC / TCR 2025 ---
+                new Vehicles("Audi RS3 LMS TCR", "TCR", "iRacing"),
+                new Vehicles("Hyundai Elantra N TCR", "TCR", "iRacing"),
+                new Vehicles("Honda Civic Type R TCR", "TCR", "iRacing"),
+
             
                 // --- GT3 ---
                 new Vehicles("Acura NSX GT3 Evo 22", "GT3", "iRacing"),
@@ -92,23 +99,23 @@ namespace Streiter_Motorsport_Software
                 new Vehicles("Mercedes-AMG GT4", "GT4", "iRacing"),
                 new Vehicles("Ford Mustang GT4", "GT4", "iRacing"),
                 
-                // --- LMP1 ---
-                new Vehicles("Porsche 919 LMP1", "LMP1", "iRacing"),
-                new Vehicles("Audi R18 LMP1", "LMP!", "iRacing"),
+                // --- M2 ---
+                new Vehicles("BMW M2 CS Racing", "M2", "iRacing"),
             
                 // --- LMP2 ---
                 new Vehicles("Dallara P217 LMP2", "LMP2", "iRacing"),
 
                 // --- GTP ---
                 new Vehicles("Porsche 963 GTP", "GTP", "iRacing"),
-                new Vehicles("Nissan GTP ZX-T", "GTP", "iRacing"),
+                new Vehicles("BMW M Hybrid V8", "GTP", "iRacing"),
                 new Vehicles("Cadillac V-Series.R GTP", "GTP", "iRacing"),
                 new Vehicles("Acura ARX-06 GTP", "GTP", "iRacing"),
+                new Vehicles("Ferrari 499P", "GTP", "iRacing"),
 
 
                 // --- Cup ---
                 new Vehicles("Porsche 911 GT3 Cup", "Cup", "iRacing"),
-                new Vehicles("Porsche 911 GT3 Cup (992", "Cup", "iRacing"),
+                new Vehicles("Porsche 911 GT3 Cup (992)", "Cup", "iRacing"),
             
             
                 // ===========================
