@@ -52,16 +52,16 @@ namespace Streiter_Motorsport_Software
                         Console.WriteLine("1. Verwaltungsmenü");
                         Console.WriteLine("2. Adminmenü");
                         Console.WriteLine("0. Beenden");
-                        switch
-                            (GetUserInput.GetUserInputInt())
+                        switch (GetUserInput.GetUserInputInt())
                         {
                             case 1:
                                 ShowVerwaltungsMenu();
                                 program.VerwaltungsMenu(GetUserInput.GetUserInputInt());
                                 break;
                             case 2:
+                                // Show admin menu and let AdminMenu handle its own input loop
                                 ShowAdminMenu();
-                                program.AdminMenu(GetUserInput.GetUserInputInt());
+                                program.AdminMenu();
                                 break;
                             case 0:
                                 Console.WriteLine("Möchten Sie alle Daten speichern bevor Sie beenden? Y/N");
@@ -117,6 +117,218 @@ namespace Streiter_Motorsport_Software
             Console.WriteLine("0. Abmelden");
         }
 
+
+        // AdminMenu jetzt ohne Eingabe-Parameter; liest innerhalb der Schleife neu ein.
+        public void AdminMenu()
+        {
+            while (true)
+            {
+                ShowAdminMenu();
+                int input = GetUserInput.GetUserInputInt();
+
+                switch (input)
+                {
+                    case 1:
+                        UserManager userManager = AppUserManager;
+                        Console.WriteLine("Software Benutzer verwalten");
+                        Console.WriteLine("---------------------------");
+                        Console.WriteLine("1. Benutzer anlegen");
+                        Console.WriteLine("2. Benutzer entfernen");
+                        Console.WriteLine("0. Zurück");
+                        int choice = GetUserInput.GetUserInputInt();
+                        if (choice == 0)
+                        {
+                            break;
+                        }
+                        if (choice == 1)
+                        {
+                            while (true)
+                            {
+                                Console.WriteLine("Rolle zuweisen: ");
+                                Console.WriteLine("1. Administrator");
+                                Console.WriteLine("2. Teamverwaltung");
+                                Console.WriteLine("3. Mitgliedskonto (WiP)");
+                                int choice1 = GetUserInput.GetUserInputInt();
+
+                                if (choice1 == 1)
+                                {
+                                    Console.WriteLine("Neuen Administrator Benutzernamen eingeben: ");
+                                    string newAdminUsername = GetUserInput.GetUserInputStr();
+                                    Console.WriteLine("Neues Administrator Passwort eingeben: ");
+                                    string newAdminPassword = GetUserInput.GetPasswordInput();
+                                    User newAdminUser = new User(newAdminUsername, newAdminPassword, 0);
+                                    userManager.AddUser(newAdminUser);
+                                    JsonPersistence.SaveAll(AppUserManager);
+                                    Console.WriteLine($"Administrator Benutzer '{newAdminUsername}' wurde erfolgreich erstellt und gespeichert.");
+                                }
+                                else if (choice1 == 2)
+                                {
+                                    Console.WriteLine("Neuen Teamverwaltungs Benutzernamen eingeben: ");
+                                    string newTeamManagerUsername = GetUserInput.GetUserInputStr();
+                                    Console.WriteLine("Neues Teamverwaltungs Passwort eingeben: ");
+                                    string newTeamManagerPassword = GetUserInput.GetPasswordInput();
+                                    User newTeamManagerUser = new User(newTeamManagerUsername, newTeamManagerPassword, 1);
+                                    userManager.AddUser(newTeamManagerUser);
+                                    JsonPersistence.SaveAll(AppUserManager);
+                                    Console.WriteLine($"Teamverwaltungs Benutzer '{newTeamManagerUsername}' wurde erfolgreich erstellt und gespeichert.");
+                                }
+                                else if (choice1 == 3)
+                                {
+                                    Console.WriteLine("Mitgliedskonto Funktion ist noch in Arbeit.");
+                                }
+                                else if (choice1 == 0)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Ungültige Auswahl.");
+                                }
+                            }
+                            break;
+                        }
+                        else if (choice == 2)
+                        {
+                            while (true)
+                            {
+                                Console.WriteLine("Zu entfernenden Benutzernamen eingeben: ");
+                                string removeUsername = GetUserInput.GetUserInputStr();
+                                bool removed = userManager.RemoveUser(removeUsername);
+                                if (removed)
+                                {
+                                    JsonPersistence.SaveAll(AppUserManager);
+                                    Console.WriteLine($"Benutzer '{removeUsername}' wurde erfolgreich entfernt und Daten gespeichert.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Benutzer '{removeUsername}' wurde nicht gefunden.");
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    case 2:
+                        while (true)
+                        {
+                            Console.WriteLine("Teammitglieder verwalten\n----------------");
+                            Console.WriteLine("1. Mitglied hinzufügen");
+                            Console.WriteLine("2. Mitglied entfernen");
+                            Console.WriteLine("0. Zurück");
+                            int wahl = GetUserInput.GetUserInputInt();
+                            if (wahl == 0)
+                            {
+                                break;
+                            }
+                            if (wahl == 1)
+                            {
+                                Console.WriteLine("Neues Mitglied erstellen\n--------------");
+                                Console.WriteLine("Vornamen und Nachnamen eingeben: (z.B. \"Max Mustermann\"");
+                                string newMember = GetUserInput.GetUserInputStr();
+                                if (newMember == "0" || newMember.ToLower() == "exit")
+                                {
+                                    break;
+                                }
+                                if (newMember.Trim() == "")
+                                {
+                                    Console.WriteLine("Ungültiger Name. Bitte versuchen Sie es erneut.");
+                                    continue;
+                                }
+                                try
+                                {
+
+                                    EventMember newMember1 = new EventMember(newMember);
+                                    JsonPersistence.SaveAll(AppUserManager);
+                                    Console.WriteLine($"Neues Mitglied: {EventMember.Mitgliederliste.Last()} wurde erstellt.");
+                                    continue;
+                                }
+                                catch (Exception alreadyExists)
+                                {
+                                    foreach (var member in EventMember.Mitgliederliste)
+                                    {
+                                        if (member.Name.Equals(newMember, StringComparison.OrdinalIgnoreCase)) // ignorieren der Groß-/Kleinschreibung zum Vergleich
+                                        {
+                                            throw new Exception("Ein Mitglied mit diesem Namen existiert bereits.");
+                                        }
+                                    }
+                                }
+                            }
+                            if (wahl == 2)
+                            {
+                                Console.WriteLine("Welches Mitglied soll entfernt werden?");
+                                for (int i = 0; i < EventMember.Mitgliederliste.Count; i++)
+                                {
+                                    Console.WriteLine($"{i + 1}. {EventMember.Mitgliederliste[i].Name}");
+                                }
+                                int membernumber = GetUserInput.GetUserInputInt();
+                                if (membernumber > 0 && membernumber <= EventMember.Mitgliederliste.Count)
+                                {
+                                    EventMember.Mitgliederliste.RemoveAt(membernumber - 1);
+                                    JsonPersistence.SaveAll(AppUserManager);
+                                    Console.WriteLine("Mitglied entfernt und Daten gespeichert.");
+                                }
+                            }
+                            break;
+                        }
+                        break;
+                    case 3:
+                        Console.WriteLine("Event Verwaltung\n1. Event erstellen\n2. Event löschen\n0. Zurück");
+                        int eventchoice = GetUserInput.GetUserInputInt();
+                        if (eventchoice == 0)
+                        {
+                            break;
+                        }
+                        if (eventchoice == 1)
+                        {
+                            Console.WriteLine("Name des Events eingeben (0 zum Abbrechen): ");
+                            string eventName = GetUserInput.GetUserInputStr();
+                            if (eventName == "0" || eventName.Equals("exit", StringComparison.OrdinalIgnoreCase))
+                            {
+                                Console.WriteLine("Event-Erstellung abgebrochen.");
+                                break;
+                            }
+
+                            // CreateEvent kann jetzt null zurückgeben, wenn der Benutzer abbricht.
+                            var created = new Event(eventName).CreateEvent(eventName);
+                            if (created == null)
+                            {
+                                Console.WriteLine("Event-Erstellung abgebrochen.");
+                                break;
+                            }
+
+                            EventManager.AddEvent(created);
+                            JsonPersistence.SaveAll(AppUserManager);
+                            Console.WriteLine("Event erstellt und gespeichert.");
+
+                            // Return to caller so user isn't "stuck" in admin menu after creating an event
+                            Console.WriteLine("Drücken Sie eine Taste, um zum vorherigen Menü zurückzukehren.");
+                            Console.ReadKey();
+                            return;
+                        }
+                        if (eventchoice == 2)
+                        {
+                            Console.WriteLine("Welches Event soll entfernt werden?");
+                            for (int i = 0; i < EventManager.Events.Count; i++)
+                            {
+                                Console.WriteLine($"{i + 1}. {EventManager.Events[i].Name}");
+                            }
+                            int eventnumber = GetUserInput.GetUserInputInt();
+                            if (eventnumber > 0 && eventnumber <= EventManager.Events.Count)
+                            {
+                                EventManager.Events.RemoveAt(eventnumber - 1);
+                                JsonPersistence.SaveAll(AppUserManager);
+                                Console.WriteLine("Event entfernt und Daten gespeichert.");
+                            }
+                        }
+                        break;
+                    case 0:
+                        // Zurück ins vorherige Menü
+                        return;
+                    default:
+                        Console.WriteLine("Ungültige Auswahl.");
+                        break;
+                }
+            }
+        }
 
         public void VerwaltungsMenu(int input)
         {
@@ -645,6 +857,11 @@ namespace Streiter_Motorsport_Software
                             EventManager.AddEvent(created);
                             JsonPersistence.SaveAll(AppUserManager);
                             Console.WriteLine("Event erstellt und gespeichert.");
+
+                            // Return to caller so user isn't "stuck" in admin menu after creating an event
+                            Console.WriteLine("Drücken Sie eine Taste, um zum vorherigen Menü zurückzukehren.");
+                            Console.ReadKey();
+                            return;
                         }
                         if (eventchoice == 2)
                         {
