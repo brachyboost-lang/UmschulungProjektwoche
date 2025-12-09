@@ -117,7 +117,7 @@ namespace Streiter_Motorsport_Software
             Console.WriteLine("0. Abmelden");
         }
 
-       
+
         public void VerwaltungsMenu(int input)
         {
             switch (input)
@@ -462,8 +462,9 @@ namespace Streiter_Motorsport_Software
 
                     break;
                 case 0:
-                    MainLoop();
-                    break;
+                    // Keinen rekursiven Aufruf von MainLoop – stattdessen zurückgeben,
+                    // damit der Aufrufer (MainLoop) die Kontrolle behält.
+                    return;
             }
         }
         public void AdminMenu(int input)

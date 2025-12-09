@@ -45,7 +45,8 @@ namespace Streiter_Motorsport_Software
             // durchsucht zentrale fahrzeugklassenliste und fügt passenden Eintrag hinzu.
             foreach (VehicleClasses vc in VehicleClasses.fahrzeugklassenliste)
             {
-                if (vc.Game == simulation)
+                // Vergleich über normalisierte Simulationen (akzeptiert Kurzformen / unterschiedliche Schreibweisen)
+                if (EventManager.NormalizeSimulationName(vc.Game) == EventManager.NormalizeSimulationName(simulation))
                 {
                     VorgeschlageneFahrzeugklassen.Add(vc);
                 }
@@ -117,32 +118,48 @@ namespace Streiter_Motorsport_Software
             this.Datum = GetUserInput.GetUserInputDateTime();
             Console.WriteLine("Fahrzeugklassen auswählen: ");
             this.VorgeschlageneFahrzeugklassen = EventManager.SchlageFahrzeugklassenVor(this.Simulation);
-            for (int i = 0; i < this.VorgeschlageneFahrzeugklassen.Count; i++)
+
+            // Wenn keine Klassen verfügbar sind, dem Benutzer eine klare Meldung geben
+            if (this.VorgeschlageneFahrzeugklassen.Count == 0)
             {
-                Console.WriteLine($"{i + 1}. {this.VorgeschlageneFahrzeugklassen[i].Fahrzeugklasse}");
+                Console.WriteLine("Für die gewählte Simulation sind keine Fahrzeugklassen hinterlegt.");
             }
-            Console.WriteLine("Geben Sie die Nummern der gewünschten Fahrzeugklassen ein, getrennt durch Kommas: (z.B. 1, 5, 6");
-            int eingabe = GetUserInput.GetUserInputInt();
-            string[] ausgewaehlteNummern = eingabe.ToString().Split(','); // trennt die eingabe in einzelne nummern auf
-            for (int i = 0; i < ausgewaehlteNummern.Length; i++)
+            else
             {
-                if (int.TryParse(ausgewaehlteNummern[i].Trim(), out int nummer)) // trimmt leerzeichen und prüft ob es eine gültige zahl ist
+                for (int i = 0; i < this.VorgeschlageneFahrzeugklassen.Count; i++)
                 {
-                    if (nummer >= 1 && nummer <= this.VorgeschlageneFahrzeugklassen.Count)
+                    Console.WriteLine($"{i + 1}. {this.VorgeschlageneFahrzeugklassen[i].Fahrzeugklasse}");
+                }
+
+                Console.WriteLine("Geben Sie die Nummern der gewünschten Fahrzeugklassen ein, getrennt durch Kommas (z.B. 1,5,6) oder 0 für keine Auswahl:");
+                string eingabe = GetUserInput.GetUserInputStr();
+                string[] ausgewaehlteNummern = eingabe.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries); // trennt die eingabe in einzelne nummern auf
+                for (int i = 0; i < ausgewaehlteNummern.Length; i++)
+                {
+                    if (int.TryParse(ausgewaehlteNummern[i].Trim(), out int nummer)) // trimmt leerzeichen und prüft ob es eine gültige zahl ist
                     {
-                        VehicleClasses ausgewaehlteKlasse = this.VorgeschlageneFahrzeugklassen[nummer - 1];
-                        this.AusgewählteFahrzeugklassen.Add(ausgewaehlteKlasse);
+                        if (nummer == 0) break;
+                        if (nummer >= 1 && nummer <= this.VorgeschlageneFahrzeugklassen.Count)
+                        {
+                            VehicleClasses ausgewaehlteKlasse = this.VorgeschlageneFahrzeugklassen[nummer - 1];
+                            // vermeide doppelte Einträge
+                            if (!this.AusgewählteFahrzeugklassen.Contains(ausgewaehlteKlasse))
+                            {
+                                this.AusgewählteFahrzeugklassen.Add(ausgewaehlteKlasse);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Ungültige Nummer: {nummer}. Diese wird übersprungen.");
+                        }
                     }
                     else
                     {
-                        Console.WriteLine($"Ungültige Nummer: {nummer}. Diese wird übersprungen.");
+                        Console.WriteLine($"Ungültige Eingabe: {ausgewaehlteNummern[i]}. Diese wird übersprungen.");
                     }
                 }
-                else
-                {
-                    Console.WriteLine($"Ungültige Eingabe: {ausgewaehlteNummern[i]}. Diese wird übersprungen.");
-                }
             }
+
             Console.WriteLine("Event erstellt. Folgende Auswahl wurde getroffen: ");
             bool finalValid = false;
             while (!finalValid)
@@ -229,6 +246,13 @@ namespace Streiter_Motorsport_Software
                             }
                             Console.WriteLine("Wählen Sie Fahrzeugklassen aus zum hinzufügen: ");
                             this.VorgeschlageneFahrzeugklassen = EventManager.SchlageFahrzeugklassenVor(this.Simulation);
+
+                            if (this.VorgeschlageneFahrzeugklassen.Count == 0)
+                            {
+                                Console.WriteLine("Für die gewählte Simulation sind keine Fahrzeugklassen hinterlegt.");
+                                break;
+                            }
+
                             for (int i = 0; i < this.VorgeschlageneFahrzeugklassen.Count; i++)
                             {
                                 if (this.AusgewählteFahrzeugklassen.Contains(this.VorgeschlageneFahrzeugklassen[i]))
@@ -240,13 +264,14 @@ namespace Streiter_Motorsport_Software
                                     Console.WriteLine($"{i + 1}. {this.VorgeschlageneFahrzeugklassen[i].Fahrzeugklasse}");
                                 }
                             }
-                            Console.WriteLine("Geben Sie die Nummern der gewünschten Fahrzeugklassen ein, getrennt durch Kommas: (z.B. 1, 5, 6");
-                            int neueEingabe = GetUserInput.GetUserInputInt();
-                            string[] neueAusgewaehlteNummern = neueEingabe.ToString().Split(',');
+                            Console.WriteLine("Geben Sie die Nummern der gewünschten Fahrzeugklassen ein, getrennt durch Kommas (z.B. 1,5,6) oder 0 zum Abbrechen:");
+                            string neueEingabe = GetUserInput.GetUserInputStr();
+                            string[] neueAusgewaehlteNummern = neueEingabe.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                             for (int i = 0; i < neueAusgewaehlteNummern.Length; i++)
                             {
                                 if (int.TryParse(neueAusgewaehlteNummern[i].Trim(), out int nummer))
                                 {
+                                    if (nummer == 0) break;
                                     if (nummer >= 1 && nummer <= this.VorgeschlageneFahrzeugklassen.Count)
                                     {
                                         VehicleClasses ausgewaehlteKlasse = this.VorgeschlageneFahrzeugklassen[nummer - 1];
@@ -340,7 +365,8 @@ namespace Streiter_Motorsport_Software
             // Für jeden Eintrag in der zentralen Fahrzeugliste prüfen wir Simulation + Klasse.
             foreach (Vehicles v in Vehicles.fahrzeugeliste)
             {
-                if (v.Game != this.Simulation)
+                // Vergleich über normalisierte Simulationen (akzeptiert Kurzformen / unterschiedliche Schreibweisen)
+                if (EventManager.NormalizeSimulationName(v.Game) != EventManager.NormalizeSimulationName(this.Simulation))
                 {
                     // Fahrzeug gehört nicht zur Simulation des Events
                     continue;
@@ -402,7 +428,7 @@ namespace Streiter_Motorsport_Software
             }
 
             // Fahrzeug muss zur Simulation passen
-            if (fahrzeug.Game != this.Simulation)
+            if (EventManager.NormalizeSimulationName(fahrzeug.Game) != EventManager.NormalizeSimulationName(this.Simulation))
             {
                 throw new InvalidOperationException("Das Fahrzeug gehört nicht zur Simulation des Events.");
             }
@@ -435,6 +461,33 @@ namespace Streiter_Motorsport_Software
     {
         internal static List<Event> Events { get; private set; } = new();
 
+        // Helfer: Normalisiert verschiedene Schreibweisen / Kurzformen einer Simulation auf eine kanonische Form.
+        // So müssen Fahrzeug-/Klassenlisten nicht überall geändert werden.
+        internal static string NormalizeSimulationName(string? sim)
+        {
+            if (string.IsNullOrWhiteSpace(sim)) return string.Empty;
+            var s = sim.Trim().ToLowerInvariant();
+
+            if (s == "acc" || s.Contains("assetto") || s.Contains("competizione"))
+            {
+                return "Assetto Corsa Competizione";
+            }
+
+            if (s == "lmu" || s.Contains("le mans") || s.Contains("ultimate"))
+            {
+                return "Le Mans Ultimate";
+            }
+
+            if (s.Contains("iracing") || s == "i-racing")
+            {
+                return "iRacing";
+            }
+
+            // Standard: Rückgabe in Original-Form, aber mit normalisiertem Whitespace
+            // (das reicht für string-equality-Vergleich nach Normalisierung)
+            return sim.Trim();
+        }
+
         // Erstellt ein Event und speichert es in der Liste.
         public static void AddEvent(Event newEvent)
         // wird benötigt um ein event in die liste hinzuzufügen da Events private set ist
@@ -449,7 +502,7 @@ namespace Streiter_Motorsport_Software
             List<VehicleClasses> ergebnis = new List<VehicleClasses>();
             foreach (VehicleClasses vc in VehicleClasses.fahrzeugklassenliste)
             {
-                if (vc.Game == simulation)
+                if (NormalizeSimulationName(vc.Game) == NormalizeSimulationName(simulation))
                 {
                     ergebnis.Add(vc);
                 }
@@ -463,7 +516,7 @@ namespace Streiter_Motorsport_Software
             List<Vehicles> ergebnis = new List<Vehicles>();
             foreach (Vehicles v in Vehicles.fahrzeugeliste)
             {
-                if (v.Game == simulation && v.Fahrzeugklasse == fahrzeugklasse)
+                if (NormalizeSimulationName(v.Game) == NormalizeSimulationName(simulation) && v.Fahrzeugklasse == fahrzeugklasse)
                 {
                     ergebnis.Add(v);
                 }
