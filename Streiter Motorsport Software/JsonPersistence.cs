@@ -16,11 +16,12 @@ namespace Streiter_Motorsport_Software
             WriteIndented = true,
         };
 
-        // DTOs
+        // DTOs - Erklärung: Data Transfer Objects, einfache Klassen/Records zum Serialisieren/Deserialisieren
         private record UserDto(string Username, string Password, byte AccessLevel);
         private record VehicleClassDto(string Fahrzeugklasse, string Game);
         private record VehicleDto(string Fahrzeugname, string Fahrzeugklasse, string Game);
-        private record EventMemberDto(int Id, string Name, string? GewaehltesFahrzeugName);
+        // EventMember DTO now supports multiple vehicle names
+        private record EventMemberDto(int Id, string Name, List<string>? GewaehlteFahrzeugNames);
         private record EventDto(int Id, string Name, string? Simulation, int? Dauer, DateTime Datum, string? Strecke, List<string> AusgewaehlteFahrzeugklassen, List<int> AngemeldeteMitgliederIds);
 
         public static void SaveAll(UserManager userManager)
@@ -202,7 +203,12 @@ namespace Streiter_Motorsport_Software
                 for (int i = 0; i < list.Count; i++)
                 {
                     var m = list[i];
-                    dtos.Add(new EventMemberDto(m.Id, m.Name, m.GewaehltesFahrzeug?.Fahrzeugname));
+                    var vehicleNames = new List<string>();
+                    for (int j = 0; j < m.GewaehlteFahrzeuge.Count; j++)
+                    {
+                        vehicleNames.Add(m.GewaehlteFahrzeuge[j].Fahrzeugname);
+                    }
+                    dtos.Add(new EventMemberDto(m.Id, m.Name, vehicleNames));
                 }
 
                 var json = JsonSerializer.Serialize(dtos, JsonOptions);
@@ -222,33 +228,71 @@ namespace Streiter_Motorsport_Software
             try
             {
                 var raw = File.ReadAllText(path);
-                var dtos = JsonSerializer.Deserialize<List<EventMemberDto>>(raw);
-                if (dtos != null)
+
+                // Support old format (single string) and new format (array of strings).
+                using var doc = JsonDocument.Parse(raw);
+                var root = doc.RootElement;
+                if (root.ValueKind != JsonValueKind.Array) return;
+
+                EventMember.Mitgliederliste.Clear();
+
+                foreach (var element in root.EnumerateArray())
                 {
-                    EventMember.Mitgliederliste.Clear();
-
-                    foreach (var d in dtos)
+                    try
                     {
-                        var member = new EventMember(d.Id, d.Name);
+                        int id = element.GetProperty("Id").GetInt32();
+                        string name = element.GetProperty("Name").GetString() ?? string.Empty;
+                        var member = new EventMember(id, name);
 
-                        if (!string.IsNullOrEmpty(d.GewaehltesFahrzeugName))
+                        // New property: GewaehlteFahrzeugNames (array)
+                        if (element.TryGetProperty("GewaehlteFahrzeugNames", out var arr) && arr.ValueKind == JsonValueKind.Array)
                         {
+                            foreach (var item in arr.EnumerateArray())
+                            {
+                                if (item.ValueKind == JsonValueKind.String)
+                                {
+                                    string vehicleName = item.GetString() ?? string.Empty;
+                                    Vehicles? vehicle = null;
+                                    var vehicles = Vehicles.fahrzeugeliste;
+                                    for (int i = 0; i < vehicles.Count; i++)
+                                    {
+                                        if (vehicles[i].Fahrzeugname == vehicleName)
+                                        {
+                                            vehicle = vehicles[i];
+                                            break;
+                                        }
+                                    }
+                                    if (vehicle != null)
+                                    {
+                                        member.CarChoice(vehicle);
+                                    }
+                                }
+                            }
+                        }
+                        else if (element.TryGetProperty("GewaehltesFahrzeugName", out var single) && single.ValueKind == JsonValueKind.String)
+                        {
+                            // backward compatibility: single string property
+                            string vehicleName = single.GetString() ?? string.Empty;
                             Vehicles? vehicle = null;
                             var vehicles = Vehicles.fahrzeugeliste;
                             for (int i = 0; i < vehicles.Count; i++)
                             {
-                                if (vehicles[i].Fahrzeugname == d.GewaehltesFahrzeugName)
+                                if (vehicles[i].Fahrzeugname == vehicleName)
                                 {
                                     vehicle = vehicles[i];
                                     break;
                                 }
                             }
-
                             if (vehicle != null)
                             {
                                 member.CarChoice(vehicle);
                             }
                         }
+                    }
+                    catch
+                    {
+                        // Skip invalid entries but continue loading others.
+                        continue;
                     }
                 }
             }

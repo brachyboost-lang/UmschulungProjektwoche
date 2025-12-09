@@ -481,7 +481,8 @@ namespace Streiter_Motorsport_Software
 
         internal int Id { get; private set; }           // Eindeutige einfache ID
         internal string Name { get; set; }              // Anzeigename des Mitglieds
-        internal Vehicles? GewaehltesFahrzeug { get; private set; } // Gewähltes Fahrzeug (kann null sein)
+        // Liste der gewählten Fahrzeuge (jetzt mehrere möglich)
+        internal List<Vehicles> GewaehlteFahrzeuge { get; private set; } = new List<Vehicles>();
         internal static List<EventMember> Mitgliederliste { get; private set; } = eventMembers;
 
         public EventMember(string name)
@@ -490,6 +491,7 @@ namespace Streiter_Motorsport_Software
             Id = naechsteId++;
             Name = name;
             Mitgliederliste.Add(this); // fügt dieses mitglied direkt auf die mitgliederliste hinzu
+            GewaehlteFahrzeuge = new List<Vehicles>();
         }
 
         // Spezieller Konstruktor zur Rekonstruktion beim Laden aus Persistenz (setzt Id direkt)
@@ -499,13 +501,29 @@ namespace Streiter_Motorsport_Software
             if (id >= naechsteId) naechsteId = id + 1;
             Name = name;
             Mitgliederliste.Add(this);
+            GewaehlteFahrzeuge = new List<Vehicles>();
         }
 
-        // Setzt das gewählte Fahrzeug für dieses Mitglied.
+        // Fügt ein Fahrzeug zu den gewählten Fahrzeugen dieses Mitglieds hinzu.
         // Validierungen (ob das Fahrzeug erlaubt ist) erfolgen in der Event-Logik.
         internal void CarChoice(Vehicles fahrzeug)
         {
-            GewaehltesFahrzeug = fahrzeug;
+            if (fahrzeug == null)
+            {
+                throw new ArgumentNullException(nameof(fahrzeug));
+            }
+
+            // Duplikate vermeiden (vergleich über Fahrzeugname & Game)
+            foreach (var v in GewaehlteFahrzeuge)
+            {
+                if (v.Fahrzeugname == fahrzeug.Fahrzeugname && v.Game == fahrzeug.Game)
+                {
+                    // bereits vorhanden -> nichts tun
+                    return;
+                }
+            }
+
+            GewaehlteFahrzeuge.Add(fahrzeug);
         }
     }
 
