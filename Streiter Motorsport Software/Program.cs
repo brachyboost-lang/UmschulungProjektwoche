@@ -517,8 +517,27 @@ namespace Streiter_Motorsport_Software
                                     Console.WriteLine($"Fahreraufstellung für Event '{selectedEvent.Name}':");
 
                                     // 1) Build DriverSelection-Liste aus angemeldeten Mitgliedern mit zugewiesenen Fahrzeugen
+                                    //    IMPORTANT: Ensure each driver is included exactly once. If a member selected multiple vehicles,
+                                    //    pick a single vehicle (heuristic: choose the most popular vehicle among their choices).
                                     var selections = new List<DriverSelection>();
                                     var noVehicleMembers = new List<string>();
+
+                                    // Build frequency map of vehicle choices to prefer common vehicles
+                                    var vehicleCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                                    for (int i = 0; i < selectedEvent.AngemeldeteMitglieder.Count; i++)
+                                    {
+                                        var member = selectedEvent.AngemeldeteMitglieder[i];
+                                        if (member.GewaehlteFahrzeuge == null) continue;
+                                        for (int v = 0; v < member.GewaehlteFahrzeuge.Count; v++)
+                                        {
+                                            var veh = member.GewaehlteFahrzeuge[v];
+                                            var vid = veh.Fahrzeugname ?? string.Empty;
+                                            if (string.IsNullOrWhiteSpace(vid)) continue;
+                                            if (!vehicleCounts.ContainsKey(vid)) vehicleCounts[vid] = 0;
+                                            vehicleCounts[vid]++;
+                                        }
+                                    }
+
                                     for (int i = 0; i < selectedEvent.AngemeldeteMitglieder.Count; i++)
                                     {
                                         var member = selectedEvent.AngemeldeteMitglieder[i];
@@ -528,13 +547,29 @@ namespace Streiter_Motorsport_Software
                                             continue;
                                         }
 
+                                        // Choose single vehicle for this member:
+                                        string chosenVehicleId = null;
+                                        int bestCount = -1;
                                         for (int v = 0; v < member.GewaehlteFahrzeuge.Count; v++)
                                         {
                                             var veh = member.GewaehlteFahrzeuge[v];
-                                            // Verwende Fahrzeugname als VehicleId (String). Falls es andere Ids gibt, kann das hier angepasst werden.
-                                            string vehicleId = veh.Fahrzeugname ?? string.Empty;
-                                            selections.Add(new DriverSelection(Convert.ToString(member.Id), member.Name, vehicleId));
+                                            var vid = veh.Fahrzeugname ?? string.Empty;
+                                            if (string.IsNullOrWhiteSpace(vid)) continue;
+                                            vehicleCounts.TryGetValue(vid, out int cnt);
+                                            if (cnt > bestCount)
+                                            {
+                                                bestCount = cnt;
+                                                chosenVehicleId = vid;
+                                            }
                                         }
+
+                                        // Fallback to first choice if nothing selected
+                                        if (string.IsNullOrWhiteSpace(chosenVehicleId))
+                                        {
+                                            chosenVehicleId = member.GewaehlteFahrzeuge[0].Fahrzeugname ?? string.Empty;
+                                        }
+
+                                        selections.Add(new DriverSelection(Convert.ToString(member.Id), member.Name, chosenVehicleId));
                                     }
 
                                     if (selections.Count == 0)
