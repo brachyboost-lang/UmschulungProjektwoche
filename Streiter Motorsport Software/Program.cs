@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Streiter_Motorsport_Software
 {
@@ -116,6 +117,7 @@ namespace Streiter_Motorsport_Software
             Console.WriteLine("0. Abmelden");
         }
 
+       
         public void VerwaltungsMenu(int input)
         {
             switch (input)
@@ -298,22 +300,120 @@ namespace Streiter_Motorsport_Software
                                 }
                                 else if (next == 2)
                                 {
-                                    // Fahreraufstellung generieren (einfach Ausgabe der angemeldeten Mitglieder und zugewiesenen Fahrzeuge)
+                                    // Neuer: Fahreraufstellung generieren mittels Fahrerzuteilung.GenerateTeams
                                     Console.WriteLine("");
                                     Console.WriteLine($"Fahreraufstellung für Event '{selectedEvent.Name}':");
-                                    if (selectedEvent.AngemeldeteMitglieder.Count == 0)
+
+                                    // 1) Build DriverSelection-Liste aus angemeldeten Mitgliedern mit zugewiesenen Fahrzeugen
+                                    var selections = new List<DriverSelection>();
+                                    var noVehicleMembers = new List<string>();
+                                    for (int i = 0; i < selectedEvent.AngemeldeteMitglieder.Count; i++)
                                     {
-                                        Console.WriteLine(" (keine angemeldeten Mitglieder)");
+                                        var member = selectedEvent.AngemeldeteMitglieder[i];
+                                        if (member.GewaehlteFahrzeuge == null || member.GewaehlteFahrzeuge.Count == 0)
+                                        {
+                                            noVehicleMembers.Add(member.Name + " (ID: " + Convert.ToString(member.Id) + ")");
+                                            continue;
+                                        }
+
+                                        for (int v = 0; v < member.GewaehlteFahrzeuge.Count; v++)
+                                        {
+                                            var veh = member.GewaehlteFahrzeuge[v];
+                                            // Verwende Fahrzeugname als VehicleId (String). Falls es andere Ids gibt, kann das hier angepasst werden.
+                                            string vehicleId = veh.Fahrzeugname ?? string.Empty;
+                                            selections.Add(new DriverSelection(Convert.ToString(member.Id), member.Name, vehicleId));
+                                        }
+                                    }
+
+                                    if (selections.Count == 0)
+                                    {
+                                        Console.WriteLine("Es sind keine Fahrer mit zugewiesenen Fahrzeugen vorhanden. Bitte weise zuerst Fahrzeuge zu.");
+                                        if (noVehicleMembers.Count > 0)
+                                        {
+                                            Console.WriteLine("Mitglieder ohne Fahrzeug:");
+                                            for (int i = 0; i < noVehicleMembers.Count; i++)
+                                            {
+                                                Console.WriteLine($" - {noVehicleMembers[i]}");
+                                            }
+                                        }
+                                        Console.WriteLine("Drücken Sie eine Taste zum Fortfahren.");
+                                        Console.ReadKey();
+                                        continueAdding = false;
+                                        break;
+                                    }
+
+                                    // 2) Rennlänge in Stunden (aufgerundet)
+                                    int raceHours = GetRaceHoursFromEvent(selectedEvent);
+
+                                    // 3) Simulationstyp bestimmen
+                                    string simStr = (selectedEvent.Simulation ?? string.Empty).ToLowerInvariant();
+                                    SimulationType simType = SimulationType.Default;
+                                    if (simStr.IndexOf("lmu", StringComparison.OrdinalIgnoreCase) >= 0 || simStr.IndexOf("le mans", StringComparison.OrdinalIgnoreCase) >= 0)
+                                    {
+                                        simType = SimulationType.LMU;
+                                    }
+                                    else if (simStr.IndexOf("acc", StringComparison.OrdinalIgnoreCase) >= 0 || simStr.IndexOf("assetto", StringComparison.OrdinalIgnoreCase) >= 0)
+                                    {
+                                        simType = SimulationType.ACC;
+                                    }
+                                    else if (simStr.IndexOf("iracing", StringComparison.OrdinalIgnoreCase) >= 0 || simStr.IndexOf("i-racing", StringComparison.OrdinalIgnoreCase) >= 0)
+                                    {
+                                        simType = SimulationType.IRacing;
+                                    }
+
+                                    // 4) Teams generieren
+                                    List<Team> teams = null;
+                                    try
+                                    {
+                                        teams = Fahrerzuteilung.GenerateTeams(selections, simType, raceHours);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine($"Fehler beim Generieren der Teams: {ex.Message}");
+                                        Console.WriteLine("Drücken Sie eine Taste zum Fortfahren.");
+                                        Console.ReadKey();
+                                        continueAdding = false;
+                                        break;
+                                    }
+
+                                    // 5) Ausgabe der generierten Teams
+                                    if (teams == null || teams.Count == 0)
+                                    {
+                                        Console.WriteLine("Es konnten keine Teams generiert werden.");
                                     }
                                     else
                                     {
-                                        for (int i = 0; i < selectedEvent.AngemeldeteMitglieder.Count; i++)
+                                        for (int ti = 0; ti < teams.Count; ti++)
                                         {
-                                            var m = selectedEvent.AngemeldeteMitglieder[i];
-                                            string cars = m.GewaehlteFahrzeuge.Count > 0 ? string.Join(", ", m.GewaehlteFahrzeuge.ConvertAll(v => v.Fahrzeugname)) : "kein Fahrzeug zugewiesen";
-                                            Console.WriteLine($"{i + 1}. {m.Name} - {cars}");
+                                            var t = teams[ti];
+                                            Console.WriteLine($"Team {t.TeamId} - Fahrzeug: {t.VehicleId} - Fahrer: {t.Drivers.Count}");
+                                            for (int di = 0; di < t.Drivers.Count; di++)
+                                            {
+                                                var d = t.Drivers[di];
+                                                Console.WriteLine($"  {di + 1}. {d.MemberName} (ID: {d.MemberId})");
+                                            }
+                                            if (t.IsUnderstaffed)
+                                            {
+                                                Console.WriteLine("  -> Hinweis: Team unterbesetzt (unter Mindestgröße).");
+                                            }
+                                            if (t.IsOverstaffed)
+                                            {
+                                                Console.WriteLine("  -> Hinweis: Team überbesetzt (über Maximum).");
+                                            }
+                                            Console.WriteLine("");
                                         }
                                     }
+
+                                    // 6) Mitglieder ohne Fahrzeug anzeigen
+                                    if (noVehicleMembers.Count > 0)
+                                    {
+                                        Console.WriteLine("Mitglieder ohne Fahrzeugzuweisung:");
+                                        for (int i = 0; i < noVehicleMembers.Count; i++)
+                                        {
+                                            Console.WriteLine($" - {noVehicleMembers[i]}");
+                                        }
+                                    }
+
                                     Console.WriteLine("Fahreraufstellung fertig. (Drücken Sie eine Taste zum Fortfahren)");
                                     Console.ReadKey();
                                     continueAdding = false;
@@ -554,5 +654,19 @@ namespace Streiter_Motorsport_Software
                 }
             }
         }
+
+        private static int GetRaceHoursFromEvent(Event ev)
+        {
+            if (ev == null) throw new ArgumentNullException(nameof(ev));
+
+            // Wenn Dauer null ist: Default nutzen oder Benutzer nachfragen.
+            // Hier: Default = 60 Minuten (1 Stunde). Alternativ könntest du den Nutzer auffordern, die Dauer zu setzen.
+            int minutes = ev.Dauer ?? 60;
+
+            int hours = (minutes + 59) / 60; // Aufrunden auf volle Stunden
+            if (hours < 1) hours = 1;
+            return hours;
+        }
+
     }
 }
