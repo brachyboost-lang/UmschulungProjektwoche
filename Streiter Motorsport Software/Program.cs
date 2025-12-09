@@ -626,11 +626,23 @@ namespace Streiter_Motorsport_Software
                         }
                         if (eventchoice == 1)
                         {
-                            Console.WriteLine("Name des Events eingeben: ");
+                            Console.WriteLine("Name des Events eingeben (0 zum Abbrechen): ");
                             string eventName = GetUserInput.GetUserInputStr();
-                            Event newEvent = new Event(eventName);
-                            newEvent.CreateEvent(eventName);
-                            EventManager.AddEvent(newEvent);
+                            if (eventName == "0" || eventName.Equals("exit", StringComparison.OrdinalIgnoreCase))
+                            {
+                                Console.WriteLine("Event-Erstellung abgebrochen.");
+                                break;
+                            }
+
+                            // CreateEvent kann jetzt null zurückgeben, wenn der Benutzer abbricht.
+                            var created = new Event(eventName).CreateEvent(eventName);
+                            if (created == null)
+                            {
+                                Console.WriteLine("Event-Erstellung abgebrochen.");
+                                break;
+                            }
+
+                            EventManager.AddEvent(created);
                             JsonPersistence.SaveAll(AppUserManager);
                             Console.WriteLine("Event erstellt und gespeichert.");
                         }

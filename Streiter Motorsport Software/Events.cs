@@ -83,16 +83,20 @@ namespace Streiter_Motorsport_Software
             // Vorschläge werden ggf. später befüllt beim Re-Laden der Referenzen
         }
 
-        public Event CreateEvent(string name)
+        // CreateEvent now returns nullable Event: returns null when user cancels (presses 0 or "exit")
+        public Event? CreateEvent(string name)
         {
             Name = name;
+
+            // Simulation auswählen
             while (true)
             {
-                Console.WriteLine("Simulation auswählen: ");
+                Console.WriteLine("Simulation auswählen (0 zum Abbrechen): ");
                 Console.WriteLine("1. iRacing");
                 Console.WriteLine("2. Assetto Corsa Competizione");
                 Console.WriteLine("3. Le Mans Ultimate");
                 int simulation = GetUserInput.GetUserInputInt();
+                if (simulation == 0) return null; // allow cancel
                 switch (simulation)
                 {
                     case 1:
@@ -105,17 +109,38 @@ namespace Streiter_Motorsport_Software
                         this.Simulation = "Le Mans Ultimate";
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException("Ungültige Auswahl für die Simulation.");
-
+                        Console.WriteLine("Ungültige Auswahl für die Simulation. Bitte erneut.");
+                        continue;
                 }
                 break;
             }
-            Console.WriteLine("Strecke eingeben: ");
-            this.Strecke = GetUserInput.GetUserInputStr();
-            Console.WriteLine("Dauer des Events in Minuten eingeben: ");
-            this.Dauer = GetUserInput.GetUserInputInt();
-            Console.WriteLine("Datum des Events eingeben: ");
-            this.Datum = GetUserInput.GetUserInputDateTime();
+
+            // Strecke eingeben (0 zum Abbrechen)
+            Console.WriteLine("Strecke eingeben (0 zum Abbrechen): ");
+            string streckeInput = GetUserInput.GetUserInputStr();
+            if (streckeInput == "0" || streckeInput.Equals("exit", StringComparison.OrdinalIgnoreCase)) return null;
+            this.Strecke = streckeInput;
+
+            // Dauer (in Minuten) eingeben (0 zum Abbrechen)
+            Console.WriteLine("Dauer des Events in Minuten eingeben (0 zum Abbrechen): ");
+            int dauerInput = GetUserInput.GetUserInputInt();
+            if (dauerInput == 0) return null;
+            this.Dauer = dauerInput;
+
+            // Datum eingeben (0 zum Abbrechen)
+            Console.WriteLine("Datum des Events eingeben im Format TT.MM.JJJJ hh:mm (0 zum Abbrechen): ");
+            while (true)
+            {
+                string dateInput = GetUserInput.GetUserInputStr();
+                if (dateInput == "0" || dateInput.Equals("exit", StringComparison.OrdinalIgnoreCase)) return null;
+                if (DateTime.TryParse(dateInput, out DateTime parsed))
+                {
+                    this.Datum = parsed;
+                    break;
+                }
+                Console.Write("Ungültiges Datum. Bitte im Format TT.MM.JJJJ hh:mm eingeben oder 0 zum Abbrechen: ");
+            }
+
             Console.WriteLine("Fahrzeugklassen auswählen: ");
             this.VorgeschlageneFahrzeugklassen = EventManager.SchlageFahrzeugklassenVor(this.Simulation);
 
@@ -133,29 +158,36 @@ namespace Streiter_Motorsport_Software
 
                 Console.WriteLine("Geben Sie die Nummern der gewünschten Fahrzeugklassen ein, getrennt durch Kommas (z.B. 1,5,6) oder 0 für keine Auswahl:");
                 string eingabe = GetUserInput.GetUserInputStr();
-                string[] ausgewaehlteNummern = eingabe.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries); // trennt die eingabe in einzelne nummern auf
-                for (int i = 0; i < ausgewaehlteNummern.Length; i++)
+                if (eingabe == "0" || eingabe.Equals("exit", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (int.TryParse(ausgewaehlteNummern[i].Trim(), out int nummer)) // trimmt leerzeichen und prüft ob es eine gültige zahl ist
+                    // no selection, continue
+                }
+                else
+                {
+                    string[] ausgewaehlteNummern = eingabe.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries); // trennt die eingabe in einzelne nummern auf
+                    for (int i = 0; i < ausgewaehlteNummern.Length; i++)
                     {
-                        if (nummer == 0) break;
-                        if (nummer >= 1 && nummer <= this.VorgeschlageneFahrzeugklassen.Count)
+                        if (int.TryParse(ausgewaehlteNummern[i].Trim(), out int nummer)) // trimmt leerzeichen und prüft ob es eine gültige zahl ist
                         {
-                            VehicleClasses ausgewaehlteKlasse = this.VorgeschlageneFahrzeugklassen[nummer - 1];
-                            // vermeide doppelte Einträge
-                            if (!this.AusgewählteFahrzeugklassen.Contains(ausgewaehlteKlasse))
+                            if (nummer == 0) break;
+                            if (nummer >= 1 && nummer <= this.VorgeschlageneFahrzeugklassen.Count)
                             {
-                                this.AusgewählteFahrzeugklassen.Add(ausgewaehlteKlasse);
+                                VehicleClasses ausgewaehlteKlasse = this.VorgeschlageneFahrzeugklassen[nummer - 1];
+                                // vermeide doppelte Einträge
+                                if (!this.AusgewählteFahrzeugklassen.Contains(ausgewaehlteKlasse))
+                                {
+                                    this.AusgewählteFahrzeugklassen.Add(ausgewaehlteKlasse);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Ungültige Nummer: {nummer}. Diese wird übersprungen.");
                             }
                         }
                         else
                         {
-                            Console.WriteLine($"Ungültige Nummer: {nummer}. Diese wird übersprungen.");
+                            Console.WriteLine($"Ungültige Eingabe: {ausgewaehlteNummern[i]}. Diese wird übersprungen.");
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Ungültige Eingabe: {ausgewaehlteNummern[i]}. Diese wird übersprungen.");
                     }
                 }
             }
@@ -171,8 +203,14 @@ namespace Streiter_Motorsport_Software
                     Console.WriteLine($"- {klasse.Fahrzeugklasse}");
                 }
                 Console.WriteLine("----------");
-                Console.WriteLine("Ist die Auswahl so korrekt? Y/N");
+                Console.WriteLine("Ist die Auswahl so korrekt? Y/N (oder 0 zum Abbrechen)");
                 char bestaetigung = GetUserInput.GetUserInputChar();
+
+                if (bestaetigung == '0') // allow abort
+                {
+                    return null;
+                }
+
                 if (bestaetigung == 'y')
                 {
                     Console.WriteLine("Event wurde erfolgreich erstellt.");
@@ -196,11 +234,12 @@ namespace Streiter_Motorsport_Software
                             while (!valid)
                             {
                                 Console.WriteLine($"Aktuelle Simulation: {this.Simulation}");
-                                Console.WriteLine("In welche Simulation soll das Event geändert werden?");
+                                Console.WriteLine("In welche Simulation soll das Event geändert werden? (0 zum Abbrechen)");
                                 Console.WriteLine("1. iRacing");
                                 Console.WriteLine("2. Assetto Corsa Competizione");
                                 Console.WriteLine("3. Le Mans Ultimate");
                                 int neueSimulation = GetUserInput.GetUserInputInt();
+                                if (neueSimulation == 0) break;
                                 switch (neueSimulation)
                                 {
                                     case 1:
@@ -225,18 +264,29 @@ namespace Streiter_Motorsport_Software
                             break;
                         case 2:
                             Console.WriteLine($"Aktuelle Strecke: {this.Strecke}");
-                            Console.WriteLine("Geben Sie die neue Strecke ein: ");
-                            this.Strecke = GetUserInput.GetUserInputStr();
+                            Console.WriteLine("Geben Sie die neue Strecke ein (0 zum Abbrechen): ");
+                            string newStrecke = GetUserInput.GetUserInputStr();
+                            if (!(newStrecke == "0" || newStrecke.Equals("exit", StringComparison.OrdinalIgnoreCase)))
+                            {
+                                this.Strecke = newStrecke;
+                            }
                             break;
                         case 3:
                             Console.WriteLine($"Aktuelle Dauer: {this.Dauer}");
-                            Console.WriteLine("Geben Sie die neue Dauer in Minuten ein: ");
-                            this.Dauer = GetUserInput.GetUserInputInt();
+                            Console.WriteLine("Geben Sie die neue Dauer in Minuten ein (0 zum Abbrechen): ");
+                            int newDauer = GetUserInput.GetUserInputInt();
+                            if (newDauer != 0) this.Dauer = newDauer;
                             break;
                         case 4:
                             Console.WriteLine($"Aktuelles Datum: {this.Datum}");
-                            Console.WriteLine("Geben Sie das neue Datum ein: ");
-                            this.Datum = GetUserInput.GetUserInputDateTime();
+                            Console.WriteLine("Geben Sie das neue Datum ein im Format TT.MM.JJJJ hh:mm (0 zum Abbrechen): ");
+                            while (true)
+                            {
+                                string input = GetUserInput.GetUserInputStr();
+                                if (input == "0" || input.Equals("exit", StringComparison.OrdinalIgnoreCase)) break;
+                                if (DateTime.TryParse(input, out DateTime parsed)) { this.Datum = parsed; break; }
+                                Console.Write("Ungültiges Datum. Bitte erneut oder 0 zum Abbrechen: ");
+                            }
                             break;
                         case 5:
                             Console.WriteLine($"Aktuelle Fahrzeugklassen: ");
@@ -244,7 +294,7 @@ namespace Streiter_Motorsport_Software
                             {
                                 Console.WriteLine($"- {klasse.Fahrzeugklasse}");
                             }
-                            Console.WriteLine("Wählen Sie Fahrzeugklassen aus zum hinzufügen: ");
+                            Console.WriteLine("Wählen Sie Fahrzeugklassen aus zum hinzufügen (0 zum Abbrechen): ");
                             this.VorgeschlageneFahrzeugklassen = EventManager.SchlageFahrzeugklassenVor(this.Simulation);
 
                             if (this.VorgeschlageneFahrzeugklassen.Count == 0)
@@ -266,6 +316,7 @@ namespace Streiter_Motorsport_Software
                             }
                             Console.WriteLine("Geben Sie die Nummern der gewünschten Fahrzeugklassen ein, getrennt durch Kommas (z.B. 1,5,6) oder 0 zum Abbrechen:");
                             string neueEingabe = GetUserInput.GetUserInputStr();
+                            if (neueEingabe == "0" || neueEingabe.Equals("exit", StringComparison.OrdinalIgnoreCase)) break;
                             string[] neueAusgewaehlteNummern = neueEingabe.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                             for (int i = 0; i < neueAusgewaehlteNummern.Length; i++)
                             {
@@ -305,10 +356,10 @@ namespace Streiter_Motorsport_Software
                     }
                 }
             }
-            return this; // hat rumgeweint dass nicht alle pfade einen value zurückgeben - muss nochmal angeschaut werden eventuell ob bug verursacht wurde
+            return this; // Fallback (sollte nicht erreicht werden)
         }
 
-        // Wählt eine Fahrzeugklasse aus der Vorschlagsliste aus.
+        // Wählt eine Fahrzeugklasse aus der Vorschagsliste aus.
         // Hier prüfen wir einfach per Vergleich auf Übereinstimmung der Eigenschaften.
         internal void ChooseClass(VehicleClasses klasse)
         {
@@ -365,7 +416,7 @@ namespace Streiter_Motorsport_Software
             // Für jeden Eintrag in der zentralen Fahrzeugliste prüfen wir Simulation + Klasse.
             foreach (Vehicles v in Vehicles.fahrzeugeliste)
             {
-                // Vergleich über normalisierte Simulationen (akzeptiert Kurzformen / unterschiedliche Schreibweisen)
+                // Vergleich über normalisierten Simulationen (akzeptiert Kurzformen / unterschiedliche Schreibweisen)
                 if (EventManager.NormalizeSimulationName(v.Game) != EventManager.NormalizeSimulationName(this.Simulation))
                 {
                     // Fahrzeug gehört nicht zur Simulation des Events
