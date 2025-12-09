@@ -31,6 +31,7 @@ namespace Streiter_Motorsport_Software
             new VehicleClasses("LMP1", "iRacing"),
             new VehicleClasses("GT4", "iRacing"),
             new VehicleClasses("Cup", "iRacing"),
+            new VehicleClasses("M2", "iRacing"),
             new VehicleClasses("LMP2", "LMU"),
             new VehicleClasses("Hypercar", "LMU"),
             new VehicleClasses("GTE", "LMU"),

@@ -102,7 +102,6 @@ namespace Streiter_Motorsport_Software
             Console.WriteLine("1. Software Benutzer verwalten");
             Console.WriteLine("2. Teammitglieder verwalten");
             Console.WriteLine("3. Events verwalten");
-            Console.WriteLine("4. Daten speichern");
             Console.WriteLine("0. Abmelden");
         }
 
@@ -240,11 +239,22 @@ namespace Streiter_Motorsport_Software
                                 Console.WriteLine("Vornamen und Nachnamen eingeben: (z.B. \"Max Mustermann\"");
                                 string newMember = GetUserInput.GetUserInputStr();
                                 EventMember newMember1 = new EventMember(newMember);
-
+                                JsonPersistence.SaveAll(AppUserManager);
                             }
                             if (wahl == 2)
                             {
-
+                                Console.WriteLine("Welches Mitglied soll entfernt werden?");
+                                for (int i = 0; i < EventMember.Mitgliederliste.Count; i++)
+                                {
+                                    Console.WriteLine($"{i + 1}. {EventMember.Mitgliederliste[i].Name}");
+                                }
+                                int membernumber = GetUserInput.GetUserInputInt();
+                                if (membernumber > 0 && membernumber <= EventMember.Mitgliederliste.Count)
+                                {
+                                    EventMember.Mitgliederliste.RemoveAt(membernumber - 1);
+                                    JsonPersistence.SaveAll(AppUserManager);
+                                    Console.WriteLine("Mitglied entfernt und Daten gespeichert.");
+                                }
                             }
                             break;
                         }
@@ -252,6 +262,10 @@ namespace Streiter_Motorsport_Software
                     case 3:
                         Console.WriteLine("Event Verwaltung\n1. Event erstellen\n2. Event löschen\n0. Zurück");
                         int eventchoice = GetUserInput.GetUserInputInt();
+                        if (eventchoice == 0)
+                        {
+                            break;
+                        }
                         if (eventchoice == 1)
                         {
                             Console.WriteLine("Name des Events eingeben: ");
@@ -276,19 +290,6 @@ namespace Streiter_Motorsport_Software
                                 JsonPersistence.SaveAll(AppUserManager);
                                 Console.WriteLine("Event entfernt und Daten gespeichert.");
                             }
-                        }
-                        break;
-                    case 4:
-                        Console.WriteLine("Möchten Sie alle persistierbaren Daten jetzt speichern? Y/N");
-                        char saveConfirm = GetUserInput.GetUserInputChar();
-                        if (saveConfirm == 'y')
-                        {
-                            JsonPersistence.SaveAll(AppUserManager);
-                            Console.WriteLine("Daten wurden gespeichert.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Speichern abgebrochen.");
                         }
                         break;
                     case 0:
