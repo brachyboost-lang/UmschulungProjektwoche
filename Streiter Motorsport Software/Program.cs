@@ -470,8 +470,33 @@ namespace Streiter_Motorsport_Software
                                 Console.WriteLine("Neues Mitglied erstellen\n--------------");
                                 Console.WriteLine("Vornamen und Nachnamen eingeben: (z.B. \"Max Mustermann\"");
                                 string newMember = GetUserInput.GetUserInputStr();
-                                EventMember newMember1 = new EventMember(newMember);
-                                JsonPersistence.SaveAll(AppUserManager);
+                                if (newMember == "0" || newMember.ToLower() == "exit")
+                                {
+                                    break;
+                                }
+                                if (newMember.Trim() == "")
+                                {
+                                    Console.WriteLine("Ungültiger Name. Bitte versuchen Sie es erneut.");
+                                    continue;
+                                }
+                                try
+                                {
+
+                                    EventMember newMember1 = new EventMember(newMember);
+                                    JsonPersistence.SaveAll(AppUserManager);
+                                    Console.WriteLine($"Neues Mitglied: {EventMember.Mitgliederliste.Last()} wurde erstellt.");
+                                    continue;
+                                }
+                                catch (Exception alreadyExists)
+                                {
+                                    foreach (var member in EventMember.Mitgliederliste)
+                                    {
+                                        if (member.Name.Equals(newMember, StringComparison.OrdinalIgnoreCase)) // ignorieren der Groß-/Kleinschreibung zum Vergleich
+                                        {
+                                            throw new Exception("Ein Mitglied mit diesem Namen existiert bereits.");
+                                        }
+                                    }
+                                }
                             }
                             if (wahl == 2)
                             {
