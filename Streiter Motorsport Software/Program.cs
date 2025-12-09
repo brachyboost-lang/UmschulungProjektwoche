@@ -69,7 +69,6 @@ namespace Streiter_Motorsport_Software
                                 break;
                             case 2:
                                 // Show admin menu and let AdminMenu handle its own input loop
-                                ShowAdminMenu();
                                 program.AdminMenu();
                                 break;
                             case 0:
