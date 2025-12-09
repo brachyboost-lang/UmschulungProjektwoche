@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace Streiter_Motorsport_Software
 {
+    // Sprint Ziel erreicht. Hauptmenü, Admin Menü, Verwaltungsmenü, Benutzer-Authentifizierung
+    // Verbesserungen für zukünftige Sprints:
+    // Refactoring der Menüs in eigene Klassen/Methoden für bessere Wartbarkeit
+    // generell bessere Fehlerbehandlung und Eingabevalidierung
+    // Logging implementieren
+    // Events automatisch nach ablaufdatum archivieren
+    // Fahrzeugverwaltung hinzufügen
+    // Simulations- und Fahrzeugklassenverwaltung hinzufügen
+    // Anzeigefehler beheben - z.b. wird teilweise noch "0" um zum vorherigen Menü zu gelangen angezeigt aber es funktioniert nicht immer wie beschrieben (kehrt zu anderem standpunkt zurück)
     internal class Program
     {
         // Application-wide UserManager (set at startup by loader)
