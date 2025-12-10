@@ -721,7 +721,7 @@ namespace Streiter_Motorsport_Software
                     // damit der Aufrufer (MainLoop) die Kontrolle behält.
                     return;
             }
-        }
+        } // dont open this monster
         public void AdminMenu(int input)
         {
             while (true)

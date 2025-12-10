@@ -193,8 +193,8 @@ namespace Streiter_Motorsport_Software
             }
 
             Console.WriteLine("Event erstellt. Folgende Auswahl wurde getroffen: ");
-            bool finalValid = false;
-            while (!finalValid)
+            
+            while (true)
             {
                 Console.WriteLine($"Simulation: {this.Simulation}, Dauer: {this.Dauer} Minuten, Strecke: {this.Strecke}, Datum: {this.Datum.ToShortDateString()}");
                 Console.WriteLine($"Fahrzeugklassen: ");
@@ -347,7 +347,7 @@ namespace Streiter_Motorsport_Software
                             }
                             break;
                         case 0:
-                            finalValid = true;
+                            
                             return this;
                         default:
                             Console.WriteLine("Ungültige eingabe");
@@ -356,7 +356,7 @@ namespace Streiter_Motorsport_Software
                     }
                 }
             }
-            return this; // Fallback (sollte nicht erreicht werden)
+            
         }
 
         // Wählt eine Fahrzeugklasse aus der Vorschagsliste aus.
